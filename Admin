@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin | The Little Atelier</title>
+<style>
+  :root { --ink:#2B2321; --cream:#FFF8EE; --white:#fff; --line:#2B2321; --soft:#E9DFD0; --muted:#6F6560; --coral:#E8695B; --coral-soft:#FBD9D3; --sage-soft:#DDEBD9; --yellow-soft:#FDEFC4; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.5 "DM Sans", system-ui, sans-serif; background:var(--cream); color:var(--ink); }
+  h1,h2,h3 { font-family: "Playfair Display", Georgia, serif; margin:0 0 12px; }
+  a { color:inherit; }
+  .hidden { display:none !important; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:40px; padding:0 16px; font:inherit; font-weight:700; font-size:14px; background:var(--coral); color:var(--ink); border:2px solid var(--line); border-radius:999px; cursor:pointer; text-decoration:none; }
+  .btn.ghost { background:var(--white); } .btn.dark { background:var(--ink); color:var(--cream); } .btn.small { min-height:32px; padding:0 12px; font-size:13px; }
+  .btn.danger { background:var(--coral-soft); } .btn[disabled] { opacity:.5; cursor:not-allowed; }
+  input, select, textarea { font:inherit; width:100%; min-height:40px; padding:8px 12px; border:2px solid var(--line); border-radius:10px; background:var(--white); color:var(--ink); }
+  textarea { min-height:72px; resize:vertical; }
+  label { display:block; font-size:12px; font-weight:700; margin:0 0 4px; }
+  .field { margin-bottom:12px; }
+  .hint { font-size:12px; color:var(--muted); }
+  .panel { background:var(--white); border:2px solid var(--line); border-radius:14px; padding:18px; margin-bottom:16px; }
+  .login { max-width:380px; margin:12vh auto; padding:0 16px; }
+  header.top { display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; padding:12px 20px; background:var(--white); border-bottom:2px solid var(--line); position:sticky; top:0; z-index:5; }
+  header.top b { font-family:Georgia,serif; font-size:18px; }
+  nav.tabs { display:flex; gap:6px; flex-wrap:wrap; flex:1; }
+  nav.tabs button { background:none; border:2px solid transparent; border-radius:999px; padding:5px 14px; font:inherit; font-weight:700; cursor:pointer; }
+  nav.tabs button[aria-current="true"] { border-color:var(--line); background:var(--yellow-soft); }
+  main { max-width:1150px; margin:0 auto; padding:20px 16px 80px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:16px; }
+  .stat { border:2px solid var(--line); border-radius:12px; padding:12px 14px; background:var(--white); }
+  .stat b { display:block; font-size:24px; font-family:Georgia,serif; } .stat span { font-size:12px; color:var(--muted); }
+  .stat.warn { background:var(--coral-soft); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:2px solid var(--soft); vertical-align:top; }
+  th { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  td.num, th.num { text-align:right; white-space:nowrap; }
+  .scroll { overflow-x:auto; }
+  tr.click { cursor:pointer; } tr.click:hover { background:var(--cream); }
+  .chip { display:inline-block; padding:2px 10px; border:2px solid var(--line); border-radius:999px; font-size:12px; font-weight:700; background:var(--yellow-soft); }
+  .chip.good { background:var(--sage-soft); } .chip.bad { background:var(--coral-soft); }
+  .filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; align-items:end; margin-bottom:12px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:16px; } @media (max-width:800px){ .two { grid-template-columns:1fr; } }
+  .msg { padding:10px 14px; border:2px solid var(--line); border-radius:10px; margin:10px 0; font-weight:600; background:var(--yellow-soft); }
+  .msg.bad { background:var(--coral-soft); } .msg.ok { background:var(--sage-soft); }
+  .modal { position:fixed; inset:0; background:rgba(43,35,33,.55); display:flex; align-items:flex-start; justify-content:center; overflow:auto; padding:24px 12px; z-index:20; }
+  .modal > div { background:var(--cream); border:2px solid var(--line); border-radius:16px; padding:20px; width:100%; max-width:760px; }
+  .kv { display:grid; grid-template-columns:130px 1fr; gap:4px 12px; font-size:14px; } .kv dt { color:var(--muted); font-weight:700; } .kv dd { margin:0; word-break:break-word; }
+</style>
+</head>
+<body>
+<div id="loginView" class="login hidden">
+  <div class="panel">
+    <h1>Admin sign in</h1>
+    <form id="loginForm">
+      <div class="field"><label for="em">Email</label><input id="em" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required></div>
+      <button class="btn dark" style="width:100%" id="loginBtn">Sign in</button>
+      <div id="loginMsg" class="msg bad hidden" role="alert"></div>
+    </form>
+  </div>
+</div>
+
+<div id="appView" class="hidden">
+  <header class="top">
+    <b>The Little Atelier · Admin</b>
+    <nav class="tabs" id="tabs"></nav>
+    <span class="hint" id="who"></span>
+    <button class="btn small ghost" id="logout">Sign out</button>
+  </header>
+  <main id="main"></main>
+</div>
+<div id="modalRoot"></div>
+
+<script>
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const money = (p) => "₹" + (p / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 });
+  const fmt = (iso) => iso ? new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", year: "2-digit", hour: "numeric", minute: "2-digit" }) : "";
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const [k, v] of Object.entries(props)) {
+      if (v === null || v === undefined || v === false) continue;
+      if (k === "class") el.className = v; else if (k === "text") el.textContent = v;
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), v); else if (k === "value") el.value = v;
+      else el.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kid of kids.flat()) { if (kid === null || kid === undefined || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+  const STATES = ["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"];
+  const ORDER_ST = ["Pending","Payment Pending","Paid","Processing","Shipped","Out for Delivery","Delivered","Cancelled","Refund Initiated","Refunded"];
+  const PAY_ST = ["Pending","Successful","Failed","Cancelled","Refunded"];
+
+  // The login token is kept in sessionStorage only (cleared when the tab closes).
+  let tok = null, refreshTok = null, email = "";
+  try { tok = sessionStorage.getItem("tla_at"); refreshTok = sessionStorage.getItem("tla_rt"); email = sessionStorage.getItem("tla_em") || ""; } catch (e) {}
+  function saveTok(r) { tok = r.access_token; refreshTok = r.refresh_token; email = r.email; try { sessionStorage.setItem("tla_at", tok); sessionStorage.setItem("tla_rt", refreshTok); sessionStorage.setItem("tla_em", email); } catch (e) {} }
+  function clearTok() { tok = refreshTok = null; try { sessionStorage.clear(); } catch (e) {} }
+
+  async function raw(action, opts, query) {
+    opts = opts || {};
+    const qs = new URLSearchParams(Object.assign({ action }, query || {})).toString();
+    return fetch("/api/admin?" + qs, { method: opts.body ? "POST" : "GET",
+      headers: Object.assign({}, opts.body ? { "Content-Type": "application/json" } : {}, tok ? { Authorization: "Bearer " + tok } : {}),
+      body: opts.body ? JSON.stringify(opts.body) : undefined });
+  }
+  async function call(action, opts, query) {
+    let r = await raw(action, opts, query);
+    if (r.status === 401 && refreshTok) {
+      const rr = await fetch("/api/admin?action=refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refresh_token: refreshTok }) });
+      if (rr.ok) { saveTok(await rr.json()); r = await raw(action, opts, query); }
+    }
+    if (r.status === 401) { clearTok(); show(); throw new Error("Please sign in again."); }
+    if (opts && opts.blob && r.ok) return r.blob();
+    let d = null; try { d = await r.json(); } catch (e) {}
+    if (!r.ok) throw new Error((d && d.error) || "Something went wrong.");
+    return d;
+  }
+
+  // ---------- login ----------
+  $("#loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const b = $("#loginBtn"), m = $("#loginMsg"); b.disabled = true; m.classList.add("hidden");
+    try {
+      const r = await fetch("/api/admin?action=login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: $("#em").value, password: $("#pw").value }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || "Could not sign in.");
+      saveTok(d); $("#pw").value = ""; show();
+    } catch (err) { m.textContent = err.message; m.classList.remove("hidden"); }
+    b.disabled = false;
+  });
+  $("#logout").addEventListener("click", () => { clearTok(); show(); });
+
+  const TABS = [["overview", "Overview"], ["orders", "Orders"], ["products", "Products"], ["customers", "Customers"], ["reports", "Reports"], ["settings", "Shipping"]];
+  let tab = "overview";
+  function show() {
+    const on = !!tok;
+    $("#loginView").classList.toggle("hidden", on); $("#appView").classList.toggle("hidden", !on);
+    if (!on) return;
+    $("#who").textContent = email;
+    const t = $("#tabs"); t.textContent = "";
+    TABS.forEach(([k, l]) => t.append(h("button", { type: "button", "aria-current": String(k === tab), onclick: () => { tab = k; show(); } }, l)));
+    render();
+  }
+  const err = (box, e) => { box.textContent = ""; box.append(h("div", { class: "msg bad", role: "alert", text: e.message })); };
+  function render() {
+    const main = $("#main"); main.textContent = ""; main.append(h("p", { class: "hint", text: "Loading…" }));
+    ({ overview: vOverview, orders: vOrders, products: vProducts, customers: vCustomers, reports: vReports, settings: vSettings })[tab](main).catch((e) => err(main, e));
+  }
+  const statusChip = (o) => h("span", { class: "chip " + (["Cancelled", "Refunded", "Refund Initiated"].includes(o.order_status) ? "bad" : o.payment_status === "Successful" ? "good" : ""), text: o.order_status });
+
+  // ---------- overview ----------
+  async function vOverview(main) {
+    const [s, st] = await Promise.all([call("stats"), call("settings")]);
+    main.textContent = "";
+    if (!st.shipping.configured) main.append(h("div", { class: "msg bad", role: "alert" }, "Shipping charges are not set, so customers cannot check out yet. Go to the Shipping tab and save your charges (use 0 if delivery is free)."));
+    const c = s.counts;
+    const stat = (n, l, warn) => h("div", { class: "stat" + (warn && n ? " warn" : "") }, h("b", { text: n }), h("span", { text: l }));
+    main.append(h("h2", { text: "Overview" }),
+      h("div", { class: "grid" }, stat(money(s.todaySales), "Sales today (paid)"), stat(s.todayOrders, "Paid orders today"), stat(money(s.totalSales), "Total sales (paid)"), stat(s.paidOrders, "Total paid orders")),
+      h("div", { class: "grid" }, stat(c.to_process, "Paid, to start"), stat(c.processing, "Processing"), stat(c.shipped, "Shipped"), stat(c.delivered, "Delivered"),
+        stat(c.awaiting_payment, "Awaiting payment"), stat(c.cancelled, "Cancelled"), stat(c.refunds, "Refunds"), stat(c.attention, "Need your attention", true)));
+    if (c.attention) main.append(h("button", { class: "btn danger", onclick: () => { orderFilter = { attention: "1" }; tab = "orders"; show(); } }, "Show orders that need attention"));
+  }
+
+  // ---------- orders ----------
+  let orderFilter = {}; let orderPage = 1;
+  async function vOrders(main) {
+    const f = orderFilter;
+    const fin = (id, label, type, val) => h("div", null, h("label", { for: id, text: label }), h("input", { id, type, value: val || "" }));
+    const sel = (id, label, opts, val) => h("div", null, h("label", { for: id, text: label }), h("select", { id }, h("option", { value: "", text: "All" }), opts.map((o) => h("option", { value: o, text: o, selected: o === val }))));
+    const form = h("form", { class: "filters" },
+      fin("f-q", "Search (order ID, name, mobile)", "search", f.q), sel("f-status", "Order status", ORDER_ST, f.status), sel("f-pay", "Payment", PAY_ST, f.pay),
+      fin("f-from", "From", "date", f.from), fin("f-to", "To", "date", f.to),
+      h("button", { class: "btn dark" }, "Filter"));
+    form.addEventListener("submit", (e) => { e.preventDefault(); orderFilter = { q: $("#f-q").value, status: $("#f-status").value, pay: $("#f-pay").value, from: $("#f-from").value, to: $("#f-to").value, attention: f.attention }; orderPage = 1; render(); });
+    const query = () => { const q = {}; Object.entries(orderFilter).forEach(([k, v]) => { if (v) q[k] = v; }); return q; };
+    const d = await call("orders", null, Object.assign(query(), { page: orderPage }));
+    main.textContent = "";
+    main.append(h("div", { class: "row", style: "justify-content:space-between" }, h("h2", { text: "Orders" }),
+      h("button", { class: "btn ghost small", onclick: async (e) => { e.target.disabled = true; try { const b = await call("export", { blob: true }, query()); const a = h("a", { href: URL.createObjectURL(b), download: "orders.csv" }); document.body.append(a); a.click(); a.remove(); } catch (x) { alert(x.message); } e.target.disabled = false; } }, "Download CSV")),
+      h("div", { class: "panel" }, form));
+    if (f.attention) main.append(h("div", { class: "msg" }, "Showing only orders that need attention. ", h("button", { class: "btn small ghost", onclick: () => { orderFilter = {}; render(); } }, "Clear")));
+    const t = h("table", null, h("thead", null, h("tr", null, ["Order", "Date", "Customer", "Status", "Payment", "Total"].map((x, i) => h("th", { class: i === 5 ? "num" : "", text: x })))),
+      h("tbody", null, d.orders.map((o) => h("tr", { class: "click", tabindex: "0", onclick: () => openOrder(o.id), onkeydown: (e) => { if (e.key === "Enter") openOrder(o.id); } },
+        h("td", null, h("b", { text: o.order_no }), o.needs_attention ? h("span", { class: "chip bad", style: "margin-left:6px", text: "Check" }) : null),
+        h("td", { text: fmt(o.created_at) }), h("td", null, o.customer_name, h("div", { class: "hint", text: o.mobile })), h("td", null, statusChip(o)),
+        h("td", { text: o.payment_status + (o.payment_method ? " · " + o.payment_method : "") }), h("td", { class: "num", text: money(o.total_paise) })))));
+    main.append(h("div", { class: "panel scroll" }, d.orders.length ? t : h("p", { text: "No orders found." })));
+    const pages = Math.max(1, Math.ceil(d.total / d.limit));
+    main.append(h("div", { class: "row" }, h("button", { class: "btn small ghost", disabled: orderPage <= 1, onclick: () => { orderPage--; render(); } }, "← Previous"),
+      h("span", { class: "hint", text: "Page " + orderPage + " of " + pages + " · " + d.total + " orders" }),
+      h("button", { class: "btn small ghost", disabled: orderPage >= pages, onclick: () => { orderPage++; render(); } }, "Next →")));
+  }
+
+  function modal(content) {
+    const root = $("#modalRoot"); root.textContent = "";
+    const close = () => { root.textContent = ""; };
+    root.append(h("div", { class: "modal", role: "dialog", "aria-modal": "true", onclick: (e) => { if (e.target.classList.contains("modal")) close(); } },
+      h("div", null, h("div", { class: "row", style: "justify-content:flex-end" }, h("button", { class: "btn small ghost", onclick: close }, "Close")), content)));
+    return close;
+  }
+
+  async function openOrder(id) {
+    const box = h("div", null, h("p", { text: "Loading…" }));
+    const close = modal(box);
+    async function load() {
+      let d; try { d = await call("order", null, { id }); } catch (e) { err(box, e); return; }
+      const o = d.order; box.textContent = "";
+      const msg = h("div", { role: "status" });
+      const act = async (fn, okText) => { msg.textContent = ""; try { const r = await fn(); msg.append(h("div", { class: "msg ok", text: okText(r) })); await load(); box.prepend(msg); } catch (e) { msg.append(h("div", { class: "msg bad", role: "alert", text: e.message })); } };
+      const paid = o.payment_status === "Successful";
+      const fulfil = ["Processing", "Shipped", "Out for Delivery", "Delivered"];
+      const canMove = paid && !["Cancelled", "Refund Initiated", "Refunded"].includes(o.order_status);
+      const statusSel = h("select", { id: "o-status", "aria-label": "New status" }, fulfil.map((s) => h("option", { value: s, text: s, selected: s === o.order_status })));
+      const car = h("input", { id: "o-car", value: o.tracking_carrier || "", maxlength: 60 }), num = h("input", { id: "o-num", value: o.tracking_number || "", maxlength: 80 }), url = h("input", { id: "o-url", value: o.tracking_url || "", maxlength: 300, placeholder: "https://" });
+      const notes = h("textarea", { id: "o-notes", maxlength: 1000 }, o.notes || "");
+      const wa = "https://wa.me/91" + o.mobile + "?text=" + encodeURIComponent("Hi " + o.customer_name + ", this is The Little Atelier about your order " + o.order_no + ".");
+      box.append(msg, h("h2", { text: o.order_no }),
+        o.needs_attention ? h("div", { class: "msg bad" }, "This order needs your attention (for example a payment arrived after the order was cancelled, or an amount or stock problem). Check Razorpay, then press Mark as checked.", h("div", { style: "margin-top:8px" }, h("button", { class: "btn small", onclick: () => act(() => call("order-update", { body: { id, resolve: true } }), () => "Marked as checked.") }, "Mark as checked"))) : null,
+        h("div", { class: "two" },
+          h("div", { class: "panel" }, h("h3", { text: "Customer" }), h("dl", { class: "kv" },
+            h("dt", { text: "Name" }), h("dd", { text: o.customer_name }), h("dt", { text: "Mobile" }), h("dd", { text: o.mobile }), h("dt", { text: "Email" }), h("dd", { text: o.email || "-" }),
+            h("dt", { text: "Address" }), h("dd", { text: [o.address, o.landmark, o.city + ", " + o.state + " " + o.pincode].filter(Boolean).join(", ") }), h("dt", { text: "Instructions" }), h("dd", { text: o.instructions || "-" })),
+            h("p", null, h("a", { class: "btn small ghost", href: wa, target: "_blank", rel: "noopener" }, "WhatsApp customer"))),
+          h("div", { class: "panel" }, h("h3", { text: "Payment" }), h("dl", { class: "kv" },
+            h("dt", { text: "Order status" }), h("dd", null, statusChip(o)), h("dt", { text: "Payment" }), h("dd", { text: o.payment_status + (o.payment_method ? " · " + o.payment_method : "") }),
+            h("dt", { text: "Razorpay ID" }), h("dd", { text: o.payment_ref || "-" }), h("dt", { text: "Placed" }), h("dd", { text: fmt(o.created_at) }), h("dt", { text: "Paid" }), h("dd", { text: fmt(o.paid_at) || "-" }),
+            h("dt", { text: "Coupon" }), h("dd", { text: o.coupon_code || "-" })))),
+        h("div", { class: "panel scroll" }, h("h3", { text: "Items" }), h("table", null, h("tbody", null,
+          d.items.map((i) => h("tr", null, h("td", { text: i.qty + " × " + i.name + (i.variant_label ? " (" + i.variant_label + ")" : "") }), h("td", { class: "num", text: money(i.line_total_paise) }))),
+          h("tr", null, h("td", { text: "Subtotal" }), h("td", { class: "num", text: money(o.subtotal_paise) })),
+          o.discount_paise ? h("tr", null, h("td", { text: "Discount" }), h("td", { class: "num", text: "−" + money(o.discount_paise) })) : null,
+          h("tr", null, h("td", { text: "Shipping" }), h("td", { class: "num", text: money(o.shipping_paise) })),
+          h("tr", null, h("td", null, h("b", { text: "Total" })), h("td", { class: "num" }, h("b", { text: money(o.total_paise) })))))),
+        h("div", { class: "panel" }, h("h3", { text: "Update order" }),
+          canMove ? h("div", { class: "row" }, h("div", { style: "flex:1;min-width:180px" }, statusSel),
+            h("button", { class: "btn dark", onclick: () => act(() => call("order-update", { body: { id, status: statusSel.value } }), () => "Status updated.") }, "Update status"))
+            : h("p", { class: "hint", text: paid ? "This order is closed, so its status cannot be changed." : "The status can be changed only after payment is verified." }),
+          h("div", { class: "form-grid", style: "margin-top:12px" },
+            h("div", { class: "field" }, h("label", { for: "o-car", text: "Courier" }), car), h("div", { class: "field" }, h("label", { for: "o-num", text: "Tracking number" }), num),
+            h("div", { class: "field" }, h("label", { for: "o-url", text: "Tracking link" }), url), h("div", { class: "field" }, h("label", { for: "o-notes", text: "Private notes (never shown to customer)" }), notes)),
+          h("button", { class: "btn", onclick: () => act(() => call("order-update", { body: { id, tracking: { carrier: car.value, number: num.value, url: url.value }, notes: notes.value } }), () => "Saved.") }, "Save tracking and notes")),
+        h("div", { class: "panel" }, h("h3", { text: "Cancel or refund" }),
+          h("div", { class: "row" },
+            ["Pending", "Payment Pending", "Paid", "Processing"].includes(o.order_status) ? h("button", { class: "btn danger", onclick: () => { if (confirm("Cancel order " + o.order_no + "?")) act(() => call("order-cancel", { body: { id } }), (r) => r.refundNeeded ? "Order cancelled. This order was paid, so now issue a refund." : "Order cancelled."); } }, "Cancel order") : null,
+            paid && !["Refund Initiated", "Refunded"].includes(o.order_status) ? h("button", { class: "btn danger", onclick: () => { const a = prompt("Refund amount in rupees (full amount is " + o.total_paise / 100 + "):", String(o.total_paise / 100)); if (a === null) return; const p = Math.round(parseFloat(a) * 100); if (!(p >= 100 && p <= o.total_paise)) { alert("Enter an amount between 1 and " + o.total_paise / 100); return; } if (confirm("Refund " + money(p) + " to the customer? This cannot be undone.")) act(() => call("order-refund", { body: { id, amount_paise: p } }), (r) => "Refund started (" + r.refundId + ")."); } }, "Refund via Razorpay") : null),
+          h("p", { class: "hint", text: "A refund goes back to the customer's original payment method through Razorpay. Only one refund can be started per payment from here." })),
+        d.payments.length ? h("div", { class: "panel scroll" }, h("h3", { text: "Payment attempts" }), h("table", null, h("thead", null, h("tr", null, ["When", "Status", "Method", "Payment ID", "Via"].map((x) => h("th", { text: x })))),
+          h("tbody", null, d.payments.map((p) => h("tr", null, h("td", { text: fmt(p.created_at) }), h("td", { text: p.status }), h("td", { text: p.method || "-" }), h("td", { text: p.razorpay_payment_id || "-" }), h("td", { text: p.verified_via || "-" })))))) : null);
+    }
+    load();
+  }
+
+  // ---------- products ----------
+  async function vProducts(main) {
+    const d = await call("products");
+    main.textContent = "";
+    main.append(h("div", { class: "row", style: "justify-content:space-between" }, h("h2", { text: "Products" }), h("button", { class: "btn dark", onclick: () => editProduct(null) }, "+ Add product")),
+      h("div", { class: "panel scroll" }, h("table", null, h("thead", null, h("tr", null, ["", "Product", "Category", "Price", "Stock", "Status", ""].map((x) => h("th", { text: x })))),
+        h("tbody", null, d.products.map((p) => h("tr", null,
+          h("td", null, p.image_url ? h("img", { src: p.image_url, alt: "", style: "width:44px;height:44px;object-fit:cover;border-radius:8px;border:2px solid var(--line)" }) : null),
+          h("td", null, h("b", { text: p.name }), p.variants.length ? h("div", { class: "hint", text: p.variants.join(", ") }) : null), h("td", { text: p.category }),
+          h("td", { text: money(p.price_paise) + (p.sale_price_paise != null ? " (sale " + money(p.sale_price_paise) + ")" : "") }),
+          h("td", { text: p.track_stock ? String(p.stock) : "Made to order" }),
+          h("td", null, h("span", { class: "chip " + (p.archived ? "bad" : p.is_available ? "good" : ""), text: p.archived ? "Archived" : p.is_available ? "On sale" : "Hidden" })),
+          h("td", { class: "num" }, h("button", { class: "btn small ghost", onclick: () => editProduct(p) }, "Edit"), " ",
+            h("button", { class: "btn small ghost", onclick: async () => { if (p.archived || confirm("Archive " + p.name + "? It will disappear from the shop. Past orders keep their history.")) { try { await call("product-archive", { body: { id: p.id, archived: !p.archived } }); render(); } catch (e) { alert(e.message); } } } }, p.archived ? "Restore" : "Archive"))))))),
+      h("p", { class: "hint", text: "Products that have been ordered cannot be erased, because order history needs them. Archive hides a product from the shop." }));
+  }
+  function editProduct(p) {
+    p = p || { name: "", category: "", description: "", price_paise: 0, sale_price_paise: null, track_stock: false, stock: 0, image_url: "", is_available: true, variants: [] };
+    const f = {
+      name: h("input", { id: "p-name", value: p.name, maxlength: 100 }), category: h("input", { id: "p-cat", value: p.category, maxlength: 40, list: "cats" }),
+      desc: h("textarea", { id: "p-desc", maxlength: 600 }, p.description || ""),
+      price: h("input", { id: "p-price", type: "number", min: "1", step: "0.01", value: p.price_paise ? p.price_paise / 100 : "" }),
+      sale: h("input", { id: "p-sale", type: "number", min: "1", step: "0.01", value: p.sale_price_paise != null ? p.sale_price_paise / 100 : "" }),
+      track: h("input", { id: "p-track", type: "checkbox", style: "width:auto;min-height:0" }), stock: h("input", { id: "p-stock", type: "number", min: "0", step: "1", value: p.stock || 0 }),
+      img: h("input", { id: "p-img", value: p.image_url || "", placeholder: "https://…" }), avail: h("input", { id: "p-avail", type: "checkbox", style: "width:auto;min-height:0" }),
+      vars: h("input", { id: "p-vars", value: (p.variants || []).join(", "), placeholder: "Peach, Cream, Sky Blue" })
+    };
+    f.track.checked = !!p.track_stock; f.avail.checked = p.is_available !== false;
+    const msg = h("div", { role: "status" }); const file = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", id: "p-file" });
+    file.addEventListener("change", () => {
+      const fl = file.files[0]; if (!fl) return;
+      if (fl.size > 2.5 * 1024 * 1024) { msg.textContent = ""; msg.append(h("div", { class: "msg bad", text: "Image is too large. Use one under 2.5 MB." })); return; }
+      const rd = new FileReader();
+      rd.onload = async () => { msg.textContent = ""; msg.append(h("div", { class: "msg", text: "Uploading…" })); try { const r = await call("upload", { body: { contentType: fl.type, dataBase64: String(rd.result).split(",")[1] } }); f.img.value = r.url; msg.textContent = ""; msg.append(h("div", { class: "msg ok", text: "Image uploaded. Press Save to keep it." })); } catch (e) { msg.textContent = ""; msg.append(h("div", { class: "msg bad", text: e.message })); } };
+      rd.readAsDataURL(fl);
+    });
+    const fld = (l, el, id, hint) => h("div", { class: "field" }, h("label", { for: id, text: l }), el, hint ? h("div", { class: "hint", text: hint }) : null);
+    const check = (l, el, id, hint) => h("div", { class: "field" }, h("label", { for: id, style: "display:flex;gap:8px;align-items:center" }, el, l), hint ? h("div", { class: "hint", text: hint }) : null);
+    const close = modal(h("div", null, msg, h("h2", { text: p.id ? "Edit product" : "Add product" }),
+      h("datalist", { id: "cats" }, ["Hair Clips", "Bun Sticks", "Scrunchies & Ties", "Keychains"].map((c) => h("option", { value: c }))),
+      fld("Name", f.name, "p-name"), fld("Category", f.category, "p-cat"), fld("Description", f.desc, "p-desc"),
+      h("div", { class: "two" }, fld("Price (₹)", f.price, "p-price"), fld("Discounted price (₹, optional)", f.sale, "p-sale")),
+      fld("Colours (optional, separate with commas)", f.vars, "p-vars", "Customers must pick one. Leave empty if there is only one version."),
+      check("Track stock for this product", f.track, "p-track", "Off = made to order, always available. On = stock goes down when a payment is verified and it shows Sold out at 0."),
+      fld("Stock quantity (used only if tracking is on)", f.stock, "p-stock"),
+      fld("Image link", f.img, "p-img"), fld("…or upload a photo (JPG, PNG, WebP)", file, "p-file"),
+      check("Show this product in the shop", f.avail, "p-avail"),
+      h("button", { class: "btn dark", onclick: async (e) => {
+        e.target.disabled = true; msg.textContent = "";
+        const rs = (v) => (v === "" ? null : Math.round(parseFloat(v) * 100));
+        try {
+          await call("product-save", { body: { id: p.id, name: f.name.value, category: f.category.value, description: f.desc.value, price_paise: rs(f.price.value), sale_price_paise: rs(f.sale.value),
+            track_stock: f.track.checked, stock: parseInt(f.stock.value || "0", 10), image_url: f.img.value, is_available: f.avail.checked, variants: f.vars.value.split(",").map((s) => s.trim()).filter(Boolean) } });
+          close(); render();
+        } catch (x) { msg.append(h("div", { class: "msg bad", role: "alert", text: x.message })); e.target.disabled = false; }
+      } }, "Save product")));
+  }
+
+  // ---------- customers ----------
+  async function vCustomers(main) {
+    const d = await call("customers");
+    main.textContent = "";
+    main.append(h("h2", { text: "Customers" }), h("div", { class: "panel scroll" }, d.customers.length ? h("table", null, h("thead", null, h("tr", null, ["Name", "Mobile", "City", "Orders", "Paid total"].map((x, i) => h("th", { class: i > 2 ? "num" : "", text: x })))),
+      h("tbody", null, d.customers.map((c) => h("tr", { class: "click", onclick: () => openCustomer(c.id) }, h("td", { text: c.name }), h("td", { text: c.mobile }), h("td", { text: c.city || "" }), h("td", { class: "num", text: c.orders }), h("td", { class: "num", text: money(c.spent) }))))) : h("p", { text: "No customers yet." })));
+  }
+  async function openCustomer(id) {
+    const box = h("div", null, h("p", { text: "Loading…" })); modal(box);
+    try {
+      const d = await call("customer", null, { id }); box.textContent = "";
+      box.append(h("h2", { text: d.customer.name }), h("p", { text: d.customer.mobile + (d.customer.email ? " · " + d.customer.email : "") }),
+        h("div", { class: "panel scroll" }, h("table", null, h("tbody", null, d.orders.map((o) => h("tr", { class: "click", onclick: () => openOrder(o.id) }, h("td", { text: o.order_no }), h("td", { text: fmt(o.created_at) }), h("td", { text: o.order_status }), h("td", { class: "num", text: money(o.total_paise) })))))));
+    } catch (e) { err(box, e); }
+  }
+
+  // ---------- reports ----------
+  async function vReports(main) {
+    const s = await call("stats"); main.textContent = "";
+    const tbl = (heads, rows) => h("div", { class: "scroll" }, h("table", null, h("thead", null, h("tr", null, heads.map((x, i) => h("th", { class: i ? "num" : "", text: x })))), h("tbody", null, rows.length ? rows.map((r) => h("tr", null, r.map((c, i) => h("td", { class: i ? "num" : "", text: c })))) : h("tr", null, h("td", { text: "No paid orders yet." })))));
+    main.append(h("h2", { text: "Reports (paid orders only)" }),
+      h("div", { class: "two" }, h("div", { class: "panel" }, h("h3", { text: "Last 30 days" }), tbl(["Day", "Orders", "Sales"], s.daily.map((d) => [d.day, d.orders, money(d.amount)]))),
+        h("div", { class: "panel" }, h("h3", { text: "By month" }), tbl(["Month", "Orders", "Sales"], s.monthly.map((d) => [d.month, d.orders, money(d.amount)])))),
+      h("div", { class: "two" }, h("div", { class: "panel" }, h("h3", { text: "Best sellers" }), tbl(["Product", "Qty", "Sales"], s.bestSellers.map((b) => [b.name, b.qty, money(b.amount)]))),
+        h("div", { class: "panel" }, h("h3", { text: "Payment methods" }), tbl(["Method", "Orders", "Sales"], s.methods.map((m) => [m.method, m.orders, money(m.amount)])))),
+      h("p", { class: "hint", text: "Days are in Indian time. Use Orders > Download CSV for a full export." }));
+  }
+
+  // ---------- shipping settings ----------
+  async function vSettings(main) {
+    const d = (await call("settings")).shipping; main.textContent = "";
+    const std = h("input", { id: "s-std", type: "number", min: "0", step: "1", value: d.configured ? d.standard_fee_paise / 100 : "" });
+    const free = h("input", { id: "s-free", type: "number", min: "1", step: "1", value: d.free_threshold_paise != null ? d.free_threshold_paise / 100 : "" });
+    const rowsBox = h("div"); const msg = h("div", { role: "status" });
+    function addRow(st, fee) {
+      const s = h("select", { "aria-label": "State" }, STATES.map((x) => h("option", { value: x, text: x, selected: x === st })));
+      const v = h("input", { type: "number", min: "0", step: "1", "aria-label": "Fee in rupees", value: fee != null ? fee / 100 : "" });
+      const r = h("div", { class: "row", style: "margin-bottom:8px" }, h("div", { style: "flex:2;min-width:160px" }, s), h("div", { style: "flex:1;min-width:100px" }, v), h("button", { type: "button", class: "btn small ghost", onclick: () => r.remove() }, "Remove"));
+      r._get = () => [s.value, v.value]; rowsBox.append(r);
+    }
+    Object.entries(d.state_fees || {}).forEach(([k, v]) => addRow(k, v));
+    main.append(h("h2", { text: "Shipping charges" }),
+      !d.configured ? h("div", { class: "msg bad" }, "Not set yet. Customers cannot check out until you save this. Enter your real courier cost. Nothing here is guessed for you.") : null,
+      h("div", { class: "panel" },
+        h("div", { class: "field" }, h("label", { for: "s-std", text: "Standard shipping fee (₹)" }), std, h("div", { class: "hint", text: "Use 0 for free delivery everywhere." })),
+        h("div", { class: "field" }, h("label", { for: "s-free", text: "Free shipping on orders of (₹) or more (optional)" }), free),
+        h("h3", { text: "Different fee for some states (optional)" }), rowsBox,
+        h("button", { type: "button", class: "btn small ghost", onclick: () => addRow("West Bengal", null) }, "+ Add a state"), msg,
+        h("div", { style: "margin-top:14px" }, h("button", { class: "btn dark", onclick: async (e) => {
+          e.target.disabled = true; msg.textContent = "";
+          const sf = {}; [...rowsBox.children].forEach((r) => { const [s, v] = r._get(); if (v !== "") sf[s] = Math.round(parseFloat(v) * 100); });
+          try {
+            if (std.value === "") throw new Error("Enter the standard shipping fee (0 if free).");
+            await call("settings-save", { body: { standard_fee_paise: Math.round(parseFloat(std.value) * 100), free_threshold_paise: free.value === "" ? null : Math.round(parseFloat(free.value) * 100), state_fees: sf } });
+            msg.append(h("div", { class: "msg ok", text: "Saved. Checkout is now open to customers." }));
+          } catch (x) { msg.append(h("div", { class: "msg bad", role: "alert", text: x.message })); }
+          e.target.disabled = false;
+        } }, "Save shipping charges"))));
+  }
+
+  show();
+})();
+</script>
+</body>
+</html>
