@@ -1,0 +1,18 @@
+{
+  "name": "the-little-atelier",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Little Atelier storefront with cart, Razorpay UPI checkout, orders and admin dashboard",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node tests/unit.test.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "pg": "^8.11.0"
+  }
+}
