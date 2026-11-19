@@ -619,6 +619,154 @@
     @media(prefers-reduced-motion:reduce) {
       *,*:before,*:after { scroll-behavior: auto !important; transition: none !important; }
     }
+
+    /* ===================== Shop: cart, checkout, orders ===================== */
+    .cart-btn {
+      position: relative; display: inline-grid; place-items: center; width: 44px; height: 44px;
+      border: 2px solid var(--line); border-radius: 50%; background: var(--white); cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .cart-btn:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--line); }
+    .cart-btn svg { width: 22px; height: 22px; }
+    .cart-count {
+      position: absolute; top: -7px; right: -7px; min-width: 21px; height: 21px; padding: 0 5px;
+      border-radius: 999px; background: var(--coral); border: 2px solid var(--line);
+      font-size: 11px; font-weight: 700; display: grid; place-items: center; line-height: 1;
+    }
+    .cart-count[data-n="0"] { display: none; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 30px); opacity: 0; pointer-events: none;
+      z-index: 60; background: var(--ink); color: var(--cream); padding: 12px 18px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; display: flex; gap: 14px; align-items: center; max-width: calc(100% - 32px);
+      transition: opacity .2s, transform .2s; border: 2px solid var(--ink);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+    .toast a { color: var(--yellow); text-decoration: underline; white-space: nowrap; }
+
+    .page-view { padding: 32px 0 90px; }
+    .page-title { font-size: clamp(30px, 4vw, 44px); margin: 0 0 22px; }
+    .page-sub { color: var(--muted); font-size: 14px; margin: -10px 0 22px; max-width: 640px; }
+    .flow-grid { display: grid; grid-template-columns: 1.45fr .85fr; gap: 28px; align-items: start; }
+    .panel { background: var(--white); border: 2px solid var(--line); border-radius: 16px; padding: 20px; }
+    .panel + .panel { margin-top: 16px; }
+    .panel h2 { font-size: 22px; margin-bottom: 14px; }
+    .sticky-panel { position: sticky; top: 150px; }
+
+    .cart-line { display: grid; grid-template-columns: 84px 1fr auto; gap: 14px; padding: 16px 0; border-bottom: 2px solid var(--soft-line); align-items: start; }
+    .cart-line:first-child { padding-top: 0; }
+    .cart-line:last-child { border-bottom: 0; padding-bottom: 0; }
+    .cart-thumb { width: 84px; height: 84px; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--c, var(--coral-soft)); }
+    .cart-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-thumb .photo-placeholder { font-size: 10px; padding: 4px; }
+    .cart-name { font-weight: 700; font-size: 15px; line-height: 1.3; }
+    .cart-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .cart-warn { font-size: 12px; font-weight: 700; color: var(--coral-dark); margin-top: 4px; }
+    .cart-controls { display: flex; align-items: center; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
+    .cart-line-total { font-weight: 700; font-size: 16px; text-align: right; white-space: nowrap; }
+    .link-btn { background: none; border: 0; padding: 4px 0; font-size: 12px; font-weight: 700; color: var(--coral-dark); text-decoration: underline; cursor: pointer; }
+
+    .sum-row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; font-size: 14px; }
+    .sum-row.total { border-top: 2px solid var(--line); margin-top: 8px; padding-top: 14px; font-size: 18px; font-weight: 700; }
+    .sum-row .muted, .muted { color: var(--muted); }
+    .sum-note { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+    .stack { display: grid; gap: 10px; margin-top: 16px; }
+    .btn.lg { min-height: 52px; font-size: 15px; width: 100%; }
+    .btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .summary-item { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 5px 0; }
+    .summary-item span:first-child { color: var(--muted); }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .field .req { color: var(--coral-dark); }
+    .field input, .field select, .field textarea {
+      width: 100%; min-height: 46px; padding: 10px 14px; font: inherit; font-size: 15px; color: var(--ink);
+      background: var(--white); border: 2px solid var(--line); border-radius: 12px;
+    }
+    .field textarea { min-height: 78px; resize: vertical; }
+    .field input[aria-invalid="true"], .field select[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: var(--coral-dark); background: #FFF1EE; }
+    .field .hint { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .field .err { color: var(--coral-dark); font-size: 12px; font-weight: 700; margin: 4px 0 0; min-height: 0; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+    .form-grid .wide { grid-column: 1 / -1; }
+    .coupon-row { display: flex; gap: 8px; }
+    .coupon-row input { flex: 1; min-width: 0; text-transform: uppercase; }
+
+    .banner { border: 2px solid var(--line); border-radius: 14px; padding: 14px 18px; font-size: 14px; margin-bottom: 18px; }
+    .banner b { display: block; font-size: 16px; margin-bottom: 2px; }
+    .banner.ok { background: var(--sage-soft); }
+    .banner.info { background: var(--yellow-soft); }
+    .banner.warn { background: var(--yellow-soft); }
+    .banner.bad { background: var(--coral-soft); }
+    .msg { font-size: 13px; font-weight: 600; margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--line); display: none; }
+    .msg.show { display: block; }
+    .msg.error { background: var(--coral-soft); }
+    .msg.info { background: var(--yellow-soft); }
+    .msg.ok { background: var(--sage-soft); }
+    .secure-note { font-size: 12px; color: var(--muted); margin-top: 12px; text-align: center; }
+
+    .spinner { width: 18px; height: 18px; border: 3px solid var(--line); border-right-color: transparent; border-radius: 50%; display: inline-block; vertical-align: -3px; animation: spin .8s linear infinite; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading { padding: 40px 0; text-align: center; color: var(--muted); font-weight: 600; }
+
+    .empty-cart { text-align: center; padding: 44px 20px; }
+    .empty-cart h2 { font-size: 26px; margin-bottom: 8px; }
+    .empty-cart p { color: var(--muted); margin: 0 0 20px; }
+
+    .order-head { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-bottom: 4px; }
+    .kv { font-size: 13px; }
+    .kv b { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1px; }
+    .kv span { font-weight: 600; word-break: break-word; }
+    .items-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .items-table td { padding: 9px 0; border-bottom: 2px solid var(--soft-line); vertical-align: top; }
+    .items-table td:last-child { text-align: right; white-space: nowrap; font-weight: 600; }
+    .items-table small { display: block; color: var(--muted); font-size: 12px; }
+    .chip-status { display: inline-block; padding: 3px 12px; border: 2px solid var(--line); border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--yellow-soft); }
+    .chip-status.good { background: var(--sage-soft); }
+    .chip-status.bad { background: var(--coral-soft); }
+
+    .timeline { list-style: none; margin: 0; padding: 0; }
+    .tl-step { position: relative; padding: 0 0 18px 34px; font-size: 14px; color: var(--muted); }
+    .tl-step:last-child { padding-bottom: 0; }
+    .tl-step:before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 2px; background: var(--soft-line); }
+    .tl-step:last-child:before { display: none; }
+    .tl-step:after { content: ''; position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--line); background: var(--white); }
+    .tl-step.done { color: var(--ink); font-weight: 700; }
+    .tl-step.done:after { background: var(--sage); }
+    .tl-step.done:before { background: var(--line); }
+    .tl-step.now:after { background: var(--yellow); box-shadow: 0 0 0 4px var(--yellow-soft); }
+    .tl-step small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+
+    .detail-buy { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+    .detail-buy .btn { width: 100%; min-height: 50px; }
+    .detail-chat { margin-top: 26px; padding-top: 18px; border-top: 2px solid var(--soft-line); }
+    .detail-chat p { font-size: 13px; font-weight: 700; margin: 0 0 10px; }
+    .detail-chat .detail-actions { margin-top: 0; }
+    .detail-chat .detail-note { margin-top: 10px; }
+    .was { color: var(--muted); font-weight: 400; font-size: .75em; margin-left: 4px; }
+    .soldout { font-weight: 700; color: var(--coral-dark); font-size: 13px; margin-top: 18px; }
+    .track-form { max-width: 520px; }
+    .track-note { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+    .recent-orders { margin-top: 22px; font-size: 13px; }
+    .recent-orders a { display: inline-block; margin: 4px 8px 0 0; border-bottom: 2px solid var(--coral); font-weight: 700; }
+    body.in-flow .sticky-contact { display: none !important; }
+    body.in-flow .footer-bottom { margin-bottom: 0; }
+
+    @media (max-width: 860px) {
+      .flow-grid { grid-template-columns: 1fr; }
+      .sticky-panel { position: static; }
+    }
+    @media (max-width: 760px) {
+      .page-view { padding: 20px 0 60px; }
+      .header-actions { margin-left: auto; }
+      .cart-line { grid-template-columns: 68px 1fr; }
+      .cart-thumb { width: 68px; height: 68px; }
+      .cart-line-total { grid-column: 2; text-align: left; }
+      .form-grid { grid-template-columns: 1fr; }
+      .detail-buy { grid-template-columns: 1fr; }
+      .toast { bottom: 16px; }
+    }
   </style>
 </head>
 
@@ -639,9 +787,11 @@
         <a href="#how">How to Order</a>
         <a href="#faq">FAQs</a>
         <a href="#contact">Contact</a>
+        <a href="#track">Track Order</a>
       </nav>
 
       <div class="header-actions">
+        <a class="cart-btn" id="cartBtn" href="#cart" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h13l-1.5 9h-10z"/><path d="M6 7 5 3H2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><span class="cart-count" id="cartCount" data-n="0">0</span></a>
         <a class="btn small whatsapp" data-wa href="#" target="_blank" rel="noopener">WhatsApp Us</a>
         <button class="menu-toggle" id="menuToggle" type="button"
           aria-label="Toggle menu" aria-expanded="false" aria-controls="mainNav">☰</button>
@@ -715,7 +865,7 @@
         </div>
 
         <div class="info-note">
-          <b>Good to know:</b> Orders are taken online from our home studio. We confirm delivery and payment details with you on WhatsApp before your order is accepted.
+          <b>Good to know:</b> Every piece is handmade to order in our home studio. Add items to your cart and pay online by UPI, card or net banking. You can also order on WhatsApp or Instagram.
         </div>
 
         <div class="category-pills" id="categoryChips" aria-label="Filter products"></div>
@@ -769,13 +919,13 @@
             </article>
             <article class="step">
               <div class="step-num">2</div>
-              <h3>Send us a message</h3>
-              <p>Tap WhatsApp or Instagram. Your product details are prepared so you can send your enquiry.</p>
+              <h3>Add to cart and pay</h3>
+              <p>Add items to your cart, enter your delivery details and pay securely online with UPI, card or net banking.</p>
             </article>
             <article class="step">
               <div class="step-num">3</div>
-              <h3>Confirm your order</h3>
-              <p>We will confirm availability, customisation, delivery charges and payment details with you.</p>
+              <h3>Get your order</h3>
+              <p>You get an order ID right away. We make your piece and update you on WhatsApp. Track it any time with your order ID and mobile number.</p>
             </article>
           </div>
         </div>
@@ -838,7 +988,7 @@
             </details>
             <details>
               <summary>How do I pay?</summary>
-              <p>Payment instructions will be shared directly after we confirm the product, quantity and delivery details. Do not make a payment until the order details are confirmed.</p>
+              <p>Pay online at checkout with any UPI app (Google Pay, PhonePe, BHIM and others), cards or net banking. Payments are handled by Razorpay. Your order is confirmed only after the payment is verified. If you prefer, you can still order by WhatsApp or Instagram and we will share payment details there.</p>
             </details>
             <details>
               <summary>Can I place a gift or bulk order?</summary>
@@ -857,7 +1007,12 @@
       </div>
       <div class="product-detail" id="productDetail"></div>
     </div>
+    <div class="wrap page-view hidden" id="cartView"></div>
+    <div class="wrap page-view hidden" id="checkoutView"></div>
+    <div class="wrap page-view hidden" id="orderView"></div>
+    <div class="wrap page-view hidden" id="trackView"></div>
   </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <footer class="footer">
     <div class="wrap">
@@ -874,6 +1029,7 @@
           <a href="#story">Our story</a>
           <a href="#how">How to order</a>
           <a href="#faq">FAQs</a>
+          <a href="#track">Track your order</a>
         </div>
 
         <div>
@@ -909,550 +1065,918 @@
   </script>
 
   <script>
-    // ---------------------------------------------------------------
-    // BUSINESS DETAILS
-    // ---------------------------------------------------------------
+    // ===================================================================
+    // THE LITTLE ATELIER : storefront
+    // Prices shown here are for DISPLAY only. The server re-reads every price
+    // from the database when an order is created, so nothing typed or edited
+    // in the browser can change what a customer is charged.
+    // ===================================================================
+
     const SITE = {
       name: "The Little Atelier",
       tagline: "Handcrafted • Home Décor • Hair Accessories",
-
       whatsappNumber: "918420873836",
       phoneDisplay: "+91 84208 73836",
-
       instagramHandle: "thelittleatelier011126",
       email: "thelittleatelier011126@gmail.com",
-
       location: "Bandel, West Bengal, India"
     };
 
-    // ---------------------------------------------------------------
-    // CATEGORIES (each has its own colour)
-    // ---------------------------------------------------------------
-    const CATEGORIES = [
-      { name: "Hair Clips",        color: "#E8695B", dark: "#B8402F" },
-      { name: "Bun Sticks",        color: "#38B2A6", dark: "#17655D" },
-      { name: "Scrunchies & Ties", color: "#A992E0", dark: "#55399E" },
-      { name: "Keychains",         color: "#F4C04A", dark: "#7A5600" }
-    ];
+    const STATES = ["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"];
 
-    const catInfo = name => CATEGORIES.find(c => c.name === name) || CATEGORIES[0];
+    // ---------------- small helpers ----------------
+    const $ = (s) => document.querySelector(s);
+    const money = (paise) => "₹" + (paise / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 });
+    const enc = encodeURIComponent;
 
-    // ---------------------------------------------------------------
-    // PRODUCT CATALOGUE (shown in this order)
-    //
-    // PRICES: price: null shows "Ask for price" and the order message asks
-    // us to confirm it. To set a price, change null to a number, e.g. 149.
-    // Prices of 199, 119 and 129 were carried over from the old site for the
-    // bun stick, scrunchie and keychain. Please check them.
-    //
-    // COLOURS: colors: [] means no colour picker. Add names to show one.
-    // ---------------------------------------------------------------
-    const PRODUCTS = [
-      {
-        id: "crochet-claw-hair-clip",
-        name: "Crochet Claw Hair Clip",
-        category: "Hair Clips",
-        price: null,
-        images: [IMG.claw],
-        colors: [],
-        description: "A claw hair clip with a handmade crochet flower and leaves on top.",
-        details: ["Handmade with soft yarn", "Made to order"]
-      },
-      {
-        id: "crochet-clutcher",
-        name: "Crochet Clutcher",
-        category: "Hair Clips",
-        price: null,
-        images: [IMG.clutcher],
-        colors: [],
-        description: "A small clutcher with a handmade crochet flower. Easy to use every day.",
-        details: ["Handmade with soft yarn", "Made to order"]
-      },
-      {
-        id: "crochet-flower-bun-stick",
-        name: "Crochet Flower Bun Stick",
-        category: "Bun Sticks",
-        price: 199,
-        images: [IMG.bunstick],
-        colors: ["Peach", "Cream", "Sky Blue"],
-        description: "A wooden bun stick with a handmade crochet flower ring.",
-        details: ["Smooth wooden stick", "Handmade crochet flower", "Made to order"]
-      },
-      {
-        id: "crochet-hair-scrunchie",
-        name: "Crochet Hair Scrunchie",
-        category: "Scrunchies & Ties",
-        price: 119,
-        images: [IMG.scrunchie],
-        colors: ["Cream", "Pink", "Brown", "Green"],
-        description: "A frilly crochet scrunchie. Holds your hair without pulling.",
-        details: ["Handmade with soft yarn", "Strong elastic inside", "Made to order"]
-      },
-      {
-        id: "crochet-alligator-hair-clip",
-        name: "Crochet Alligator Hair Clip",
-        category: "Hair Clips",
-        price: null,
-        images: [IMG.alligator],
-        colors: [],
-        description: "A pair of alligator clips covered in handmade crochet petals.",
-        details: ["Handmade with soft yarn", "Sold as a pair", "Made to order"]
-      },
-      {
-        id: "crochet-tiktok-hair-clip",
-        name: "Crochet TikTok Hair Clip",
-        category: "Hair Clips",
-        price: null,
-        images: [IMG.tiktok],
-        colors: [],
-        description: "A pair of snap clips with a small crochet flower and a pearl bead.",
-        details: ["Handmade with soft yarn", "Pearl bead centre", "Sold as a pair", "Made to order"]
-      },
-      {
-        id: "crochet-flower-hair-tie",
-        name: "Crochet Flower Hair Tie",
-        category: "Scrunchies & Ties",
-        price: null,
-        images: [IMG.hairtie],
-        colors: [],
-        description: "A bright crochet flower on a hair tie. Cheerful and easy to wear.",
-        details: ["Handmade with soft yarn", "Made to order"]
-      },
-      {
-        id: "crochet-keychain",
-        name: "Crochet Keychain",
-        category: "Keychains",
-        price: 129,
-        images: [IMG.keychain],
-        colors: [],
-        description: "A swirl crochet keychain with a small bead. Good for keys, bags and gifting.",
-        details: ["Handmade with soft yarn", "Metal ring and chain", "Made to order"]
+    function h(tag, props, ...kids) {
+      const el = document.createElement(tag);
+      if (props) for (const [k, v] of Object.entries(props)) {
+        if (v === null || v === undefined || v === false) continue;
+        if (k === "class") el.className = v;
+        else if (k === "text") el.textContent = v;
+        else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+        else el.setAttribute(k, v === true ? "" : v);
       }
-    ];
+      for (const kid of kids.flat()) {
+        if (kid === null || kid === undefined || kid === false) continue;
+        el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+      }
+      return el;
+    }
 
-    // ---------------------------------------------------------------
-    // HELPERS
-    // ---------------------------------------------------------------
-    const money = n => (n === null || n === undefined) ? "Ask for price" : "₹" + Number(n).toLocaleString("en-IN");
-    const waUrl = message => "https://wa.me/" + SITE.whatsappNumber + "?text=" + encodeURIComponent(message);
-    const instagramDmUrl = () => "https://ig.me/m/" + encodeURIComponent(SITE.instagramHandle);
+    // Browser storage can be blocked (private windows etc.), so every use is guarded.
+    const store = {
+      get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } },
+      del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+    };
+    const sess = {
+      get(k, d) { try { const v = sessionStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+      set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } },
+      del(k) { try { sessionStorage.removeItem(k); } catch (e) { /* ignore */ } }
+    };
+
+    async function api(path, opts) {
+      opts = opts || {};
+      const r = await fetch(path, {
+        method: opts.method || "GET",
+        headers: opts.body ? { "Content-Type": "application/json" } : undefined,
+        body: opts.body ? JSON.stringify(opts.body) : undefined
+      });
+      let data = null;
+      try { data = await r.json(); } catch (e) { /* not json */ }
+      if (!r.ok) {
+        const err = new Error((data && data.error) || "Something went wrong. Please try again.");
+        err.status = r.status; err.data = data;
+        throw err;
+      }
+      return data;
+    }
+
+    // ---------------- catalogue (shown while live data loads, and used as a fallback) ----------------
+    const PRODUCTS = [
+      { id: "crochet-claw-hair-clip", name: "Crochet Claw Hair Clip", category: "Hair Clips", price_paise: 12000, images: [IMG.claw], colors: [],
+        description: "A claw hair clip with a handmade crochet flower and leaves on top.", details: ["Handmade with soft yarn", "Made to order"] },
+      { id: "crochet-clutcher", name: "Crochet Clutcher", category: "Hair Clips", price_paise: 10000, images: [IMG.clutcher], colors: [],
+        description: "A small clutcher with a handmade crochet flower. Easy to use every day.", details: ["Handmade with soft yarn", "Made to order"] },
+      { id: "crochet-flower-bun-stick", name: "Crochet Flower Bun Stick", category: "Bun Sticks", price_paise: 15000, images: [IMG.bunstick], colors: ["Peach", "Cream", "Sky Blue"],
+        description: "A wooden bun stick with a handmade crochet flower ring.", details: ["Smooth wooden stick", "Handmade crochet flower", "Made to order"] },
+      { id: "crochet-hair-scrunchie", name: "Crochet Hair Scrunchie", category: "Scrunchies & Ties", price_paise: 12000, images: [IMG.scrunchie], colors: ["Cream", "Pink", "Brown", "Green"],
+        description: "A frilly crochet scrunchie. Holds your hair without pulling.", details: ["Handmade with soft yarn", "Strong elastic inside", "Made to order"] },
+      { id: "crochet-alligator-hair-clip", name: "Crochet Alligator Hair Clip", category: "Hair Clips", price_paise: 6000, images: [IMG.alligator], colors: [],
+        description: "A pair of alligator clips covered in handmade crochet petals.", details: ["Handmade with soft yarn", "Sold as a pair", "Made to order"] },
+      { id: "crochet-tiktok-hair-clip", name: "Crochet TikTok Hair Clip", category: "Hair Clips", price_paise: 5000, images: [IMG.tiktok], colors: [],
+        description: "A pair of snap clips with a small crochet flower and a pearl bead.", details: ["Handmade with soft yarn", "Pearl bead centre", "Sold as a pair", "Made to order"] },
+      { id: "crochet-flower-hair-tie", name: "Crochet Flower Hair Tie", category: "Scrunchies & Ties", price_paise: 5000, images: [IMG.hairtie], colors: [],
+        description: "A bright crochet flower on a hair tie. Cheerful and easy to wear.", details: ["Handmade with soft yarn", "Made to order"] },
+      { id: "crochet-keychain", name: "Crochet Keychain", category: "Keychains", price_paise: 5000, images: [IMG.keychain], colors: [],
+        description: "A swirl crochet keychain with a small bead. Good for keys, bags and gifting.", details: ["Handmade with soft yarn", "Metal ring and chain", "Made to order"] }
+    ];
+    PRODUCTS.forEach((p) => { p.sale_price_paise = null; p.available = true; p.stock = null; });
+
+    const PALETTE = [
+      { color: "#E8695B", dark: "#B8402F" }, { color: "#38B2A6", dark: "#17655D" }, { color: "#A992E0", dark: "#55399E" },
+      { color: "#F4C04A", dark: "#7A5600" }, { color: "#8DB387", dark: "#3F6639" }
+    ];
+    let CATEGORIES = [];
+    function buildCategories() {
+      const names = [];
+      PRODUCTS.forEach((p) => { if (names.indexOf(p.category) < 0) names.push(p.category); });
+      CATEGORIES = names.map((name, i) => Object.assign({ name }, PALETTE[i % PALETTE.length]));
+    }
+    const catInfo = (name) => CATEGORIES.find((c) => c.name === name) || PALETTE[0];
+
+    // Live data from the server (prices, availability, shipping). If the server is not reachable
+    // or not set up yet, the site still works as a catalogue and orders go via WhatsApp/Instagram.
+    let LIVE = false;
+    let SHIPPING = { configured: false, standard_fee_paise: 0, free_threshold_paise: null, state_fees: {} };
+
+    const unit = (p) => (p.sale_price_paise != null && p.sale_price_paise < p.price_paise ? p.sale_price_paise : p.price_paise);
+    const maxQty = (p) => (p.stock != null ? Math.max(0, Math.min(20, p.stock)) : 20);
+    const canBuy = (p) => p.available !== false && maxQty(p) > 0;
+    const findProduct = (slug) => PRODUCTS.find((p) => p.id === slug);
+
+    function applyLive(data) {
+      LIVE = true;
+      SHIPPING = data.shipping;
+      const live = new Map(data.products.map((l) => [l.slug, l]));
+      PRODUCTS.forEach((p) => {
+        const l = live.get(p.id);
+        if (!l) { p.available = false; return; }
+        p.name = l.name || p.name;
+        p.category = l.category || p.category;
+        p.price_paise = l.price_paise;
+        p.sale_price_paise = l.sale_price_paise;
+        p.available = l.available;
+        p.stock = l.stock;
+        p.colors = l.variants || [];
+        if (l.description) p.description = l.description;
+        if (l.image_url) p.images = [l.image_url];
+      });
+      data.products.forEach((l) => {
+        if (PRODUCTS.some((p) => p.id === l.slug)) return;
+        PRODUCTS.push({
+          id: l.slug, name: l.name, category: l.category, price_paise: l.price_paise, sale_price_paise: l.sale_price_paise,
+          available: l.available, stock: l.stock, colors: l.variants || [], images: [l.image_url || ""],
+          description: l.description || "", details: ["Handmade with care", "Made to order"]
+        });
+      });
+      buildCategories();
+    }
+
+    // ---------------- cart ----------------
+    let cart = [];
+    function loadCart() {
+      const raw = store.get("tla_cart_v1", []);
+      cart = (Array.isArray(raw) ? raw : [])
+        .filter((i) => i && typeof i.slug === "string" && Number.isInteger(i.qty) && i.qty > 0)
+        .map((i) => ({ slug: i.slug, variant: String(i.variant || ""), qty: Math.min(20, i.qty) }));
+    }
+    function saveCart() { store.set("tla_cart_v1", cart); updateBadge(); }
+    const cartCount = () => cart.reduce((n, i) => n + i.qty, 0);
+    function updateBadge() {
+      const n = cartCount();
+      const badge = $("#cartCount");
+      badge.textContent = n;
+      badge.dataset.n = n;
+      $("#cartBtn").setAttribute("aria-label", "Cart, " + n + (n === 1 ? " item" : " items"));
+    }
+    const qtyOfProduct = (slug) => cart.filter((i) => i.slug === slug).reduce((n, i) => n + i.qty, 0);
+
+    function addToCart(slug, variant, qty) {
+      const p = findProduct(slug);
+      if (!p || !canBuy(p)) { toast("Sorry, this item is not available right now."); return false; }
+      if (p.colors.length && !variant) { toast("Please choose a colour first."); return false; }
+      if (!p.colors.length) variant = "";
+      const room = maxQty(p) - qtyOfProduct(slug);
+      if (room <= 0) { toast(p.stock != null ? "You already have all " + p.stock + " available in your cart." : "You can order up to 20 of one item at a time."); return false; }
+      const add = Math.min(qty, room);
+      const line = cart.find((i) => i.slug === slug && i.variant === variant);
+      if (line) line.qty += add; else cart.push({ slug, variant, qty: add });
+      saveCart();
+      toast(add < qty ? "Added " + add + " (that is all we have). " : "Added to your cart.", "View cart", "#cart");
+      return true;
+    }
+    function setLineQty(slug, variant, qty) {
+      const line = cart.find((i) => i.slug === slug && i.variant === variant);
+      if (!line) return;
+      const p = findProduct(slug);
+      const others = qtyOfProduct(slug) - line.qty;
+      const cap = p ? Math.max(0, maxQty(p) - others) : 20;
+      if (qty > cap) { toast(p && p.stock != null ? "Only " + p.stock + " available." : "You can order up to 20 of one item."); qty = cap; }
+      if (qty <= 0) { cart = cart.filter((i) => i !== line); } else { line.qty = qty; }
+      saveCart();
+      renderCart();
+    }
+    function removeLine(slug, variant) { cart = cart.filter((i) => !(i.slug === slug && i.variant === variant)); saveCart(); renderCart(); }
+    function clearCart() { cart = []; saveCart(); }
+
+    function shippingFor(amountAfterDiscount, state) {
+      const s = SHIPPING;
+      if (s.free_threshold_paise != null && amountAfterDiscount >= s.free_threshold_paise) return 0;
+      if (state && Object.prototype.hasOwnProperty.call(s.state_fees || {}, state)) return s.state_fees[state];
+      return s.standard_fee_paise;
+    }
+    function estimate(state, discount) {
+      const subtotal = cart.reduce((n, i) => { const p = findProduct(i.slug); return n + (p ? unit(p) * i.qty : 0); }, 0);
+      const d = Math.min(discount || 0, subtotal);
+      const shipping = subtotal ? shippingFor(subtotal - d, state) : 0;
+      return { subtotal, discount: d, shipping, total: subtotal - d + shipping };
+    }
+    const cartHasProblem = () => cart.some((i) => { const p = findProduct(i.slug); return !p || !canBuy(p) || (p.colors.length && p.colors.indexOf(i.variant) < 0); });
+
+    // ---------------- toast ----------------
+    let toastTimer;
+    function toast(msg, linkText, href) {
+      const t = $("#toast");
+      t.textContent = "";
+      t.append(h("span", { text: msg }));
+      if (linkText) t.append(h("a", { href, text: linkText }));
+      t.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove("show"), 4000);
+    }
+
+    // ---------------- business links (WhatsApp, Instagram, phone, email) ----------------
+    const waUrl = (message) => "https://wa.me/" + SITE.whatsappNumber + "?text=" + enc(message);
+    const instagramDmUrl = () => "https://ig.me/m/" + enc(SITE.instagramHandle);
     const instagramProfileUrl = () => "https://www.instagram.com/" + SITE.instagramHandle + "/";
     const phoneUrl = () => "tel:+" + SITE.whatsappNumber;
-    const $ = selector => document.querySelector(selector);
 
     function fillBusinessLinks() {
-      document.querySelectorAll("[data-wa]").forEach(link => {
-        link.href = waUrl("Hi " + SITE.name + "! I found your website and would like to know more.");
+      document.querySelectorAll("[data-wa]").forEach((a) => { a.href = waUrl("Hi " + SITE.name + "! I found your website and would like to know more."); });
+      document.querySelectorAll("[data-wa-custom]").forEach((a) => {
+        a.href = waUrl("Hi " + SITE.name + "! I would like a custom order.\nProduct: \nColours: \nQuantity: \nNeeded by (date): ");
       });
-
-      document.querySelectorAll("[data-wa-custom]").forEach(link => {
-        link.href = waUrl(
-          "Hi " + SITE.name + "! I would like a custom order.\n" +
-          "Product: \nColours: \nQuantity: \nNeeded by (date): "
-        );
-      });
-
-      document.querySelectorAll("[data-ig]").forEach(link => { link.href = instagramDmUrl(); });
-      document.querySelectorAll("[data-ig-profile]").forEach(link => { link.href = instagramProfileUrl(); });
-      document.querySelectorAll("[data-phone]").forEach(link => { link.href = phoneUrl(); });
-      document.querySelectorAll("[data-phone-label]").forEach(label => { label.textContent = SITE.phoneDisplay; });
-      document.querySelectorAll("[data-email]").forEach(link => { link.href = "mailto:" + SITE.email; });
-      document.querySelectorAll("[data-email-label]").forEach(label => { label.textContent = SITE.email; });
-
-      document.querySelectorAll("[data-site]").forEach(node => {
-        const key = node.getAttribute("data-site");
-        if (SITE[key]) node.textContent = SITE[key];
-      });
-
-      document.title = SITE.name + " | Handcrafted, Home Décor & Hair Accessories";
+      document.querySelectorAll("[data-ig]").forEach((a) => { a.href = instagramDmUrl(); });
+      document.querySelectorAll("[data-ig-profile]").forEach((a) => { a.href = instagramProfileUrl(); });
+      document.querySelectorAll("[data-phone]").forEach((a) => { a.href = phoneUrl(); });
+      document.querySelectorAll("[data-phone-label]").forEach((n) => { n.textContent = SITE.phoneDisplay; });
+      document.querySelectorAll("[data-email]").forEach((a) => { a.href = "mailto:" + SITE.email; });
+      document.querySelectorAll("[data-email-label]").forEach((n) => { n.textContent = SITE.email; });
+      document.querySelectorAll("[data-site]").forEach((n) => { const k = n.getAttribute("data-site"); if (SITE[k]) n.textContent = SITE[k]; });
       $("#year").textContent = new Date().getFullYear();
-      $("#storyLogo").src = IMG.logo;
     }
+
+    // ---------------- home: categories, filters, product cards ----------------
+    let activeCategory = "All";
 
     function makeCategoryNav() {
       const nav = $("#categoryNav");
-      nav.innerHTML = "";
-
+      nav.textContent = "";
       [{ name: "All Products", color: "#2B2321" }].concat(CATEGORIES).forEach((category, index) => {
-        const a = document.createElement("a");
-        a.href = "#shop";
-
-        const dot = document.createElement("span");
-        dot.className = "dot";
-        dot.style.background = category.color;
-
-        a.append(dot, document.createTextNode(category.name));
+        const a = h("a", { href: "#shop" }, h("span", { class: "dot", style: "background:" + category.color }), category.name);
         a.addEventListener("click", () => filterProducts(index === 0 ? "All" : category.name));
         nav.appendChild(a);
       });
     }
-
-    function placeholderTile(product, large) {
-      const div = document.createElement("div");
-      div.className = "photo-placeholder";
-      const title = document.createElement("span");
-      title.textContent = product.name;
-      const small = document.createElement("small");
-      small.textContent = "Photo coming soon";
-      div.append(title, small);
-      return div;
+    function createFilters() {
+      const holder = $("#categoryChips");
+      holder.textContent = "";
+      ["All"].concat(CATEGORIES.map((c) => c.name)).forEach((category) => {
+        const b = h("button", { type: "button", class: "chip", "aria-pressed": String(category === activeCategory), onclick: () => filterProducts(category) }, category);
+        b.dataset.category = category;
+        holder.appendChild(b);
+      });
     }
-
-    function productCard(product) {
-      const cat = catInfo(product.category);
-      const card = document.createElement("article");
-      card.className = "product-card";
-
-      const photo = document.createElement("a");
-      photo.className = "product-image";
-      photo.href = "#p=" + encodeURIComponent(product.id);
-      photo.style.setProperty("--c", cat.color);
-
-      if (product.images[0]) {
-        const img = document.createElement("img");
-        img.src = product.images[0];
-        img.alt = product.name;
-        img.loading = "lazy";
-        photo.appendChild(img);
-      } else {
-        photo.appendChild(placeholderTile(product, false));
-      }
-
-      const info = document.createElement("div");
-      info.className = "product-info";
-
-      const category = document.createElement("div");
-      category.className = "product-category";
-      category.style.setProperty("--cd", cat.dark);
-      category.textContent = product.category;
-
-      const name = document.createElement("a");
-      name.className = "product-name";
-      name.href = photo.href;
-      name.textContent = product.name;
-
-      const desc = document.createElement("p");
-      desc.className = "product-desc";
-      desc.textContent = product.description;
-
-      const price = document.createElement("div");
-      price.className = "product-price";
-      price.textContent = money(product.price);
-      if (product.price === null) price.classList.add("ask");
-
-      const actions = document.createElement("div");
-      actions.className = "product-actions";
-
-      const view = document.createElement("a");
-      view.className = "btn ghost small";
-      view.href = photo.href;
-      view.textContent = "View details";
-
-      const order = document.createElement("a");
-      order.className = "btn whatsapp small";
-      order.href = waUrl("Hi " + SITE.name + "! I would like to enquire about " + product.name + (product.price === null ? ". Please share the price." : " (" + money(product.price) + ")."));
-      order.target = "_blank";
-      order.rel = "noopener";
-      order.textContent = "Order";
-
-      actions.append(view, order);
-      info.append(category, name, desc, price, actions);
-      card.append(photo, info);
-      return card;
-    }
-
-    let activeCategory = "All";
-
     function filterProducts(category) {
       activeCategory = category;
-      document.querySelectorAll("#categoryChips .chip").forEach(button => {
-        button.setAttribute("aria-pressed", String(button.dataset.category === category));
-      });
+      document.querySelectorAll("#categoryChips .chip").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.category === category)));
       renderProducts();
     }
 
+    function placeholderTile(p) {
+      return h("div", { class: "photo-placeholder" }, h("span", { text: p.name }), h("small", { text: "Photo coming soon" }));
+    }
+    function productImage(p, big) {
+      if (p.images && p.images[0]) { const img = h("img", { src: p.images[0], alt: p.name }); if (!big) img.loading = "lazy"; return img; }
+      return placeholderTile(p);
+    }
+    function priceNode(p) {
+      const u = unit(p);
+      return u < p.price_paise ? h("span", null, money(u), h("s", { class: "was", text: money(p.price_paise) })) : h("span", { text: money(u) });
+    }
+
+    function productCard(p) {
+      const cat = catInfo(p.category);
+      const href = "#p=" + enc(p.id);
+      const card = h("article", { class: "product-card" });
+      const photo = h("a", { class: "product-image", href, style: "--c:" + cat.color, "aria-label": p.name }, productImage(p, false));
+
+      let buy;
+      if (!canBuy(p)) buy = h("button", { type: "button", class: "btn small", disabled: true }, p.stock === 0 ? "Sold out" : "Unavailable");
+      else if (p.colors.length) buy = h("a", { class: "btn small", href }, "Choose colour");
+      else buy = h("button", { type: "button", class: "btn small", onclick: () => addToCart(p.id, "", 1) }, "Add to cart");
+
+      card.append(photo, h("div", { class: "product-info" },
+        h("div", { class: "product-category", style: "--cd:" + cat.dark, text: p.category }),
+        h("a", { class: "product-name", href, text: p.name }),
+        h("p", { class: "product-desc", text: p.description }),
+        h("div", { class: "product-price" }, priceNode(p)),
+        h("div", { class: "product-actions" }, h("a", { class: "btn ghost small", href }, "View details"), buy)
+      ));
+      return card;
+    }
     function renderProducts() {
       const grid = $("#productGrid");
-      grid.innerHTML = "";
-
-      const filtered = PRODUCTS.filter(p => activeCategory === "All" || p.category === activeCategory);
-
-      if (!filtered.length) {
-        const empty = document.createElement("p");
-        empty.className = "empty";
-        empty.textContent = "No products in this category yet.";
-        grid.appendChild(empty);
-        return;
-      }
-
-      filtered.forEach(p => grid.appendChild(productCard(p)));
+      grid.textContent = "";
+      const list = PRODUCTS.filter((p) => activeCategory === "All" || p.category === activeCategory);
+      if (!list.length) { grid.append(h("p", { class: "empty", text: "No products in this category yet." })); return; }
+      list.forEach((p) => grid.appendChild(productCard(p)));
     }
 
-    function createFilters() {
-      const holder = $("#categoryChips");
-      holder.innerHTML = "";
-
-      ["All"].concat(CATEGORIES.map(c => c.name)).forEach(category => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "chip";
-        button.textContent = category;
-        button.dataset.category = category;
-        button.setAttribute("aria-pressed", String(category === "All"));
-        button.addEventListener("click", () => filterProducts(category));
-        holder.appendChild(button);
-      });
-    }
-
+    // ---------------- product page ----------------
     function renderProduct(id) {
-      const product = PRODUCTS.find(item => item.id === id);
+      const p = findProduct(id);
       const detail = $("#productDetail");
-      detail.innerHTML = "";
+      detail.textContent = "";
+      if (!p) { detail.textContent = "Sorry, this product could not be found."; $("#crumbName").textContent = ""; return; }
+      const cat = catInfo(p.category);
+      $("#crumbName").textContent = p.name;
+      document.title = p.name + " | " + SITE.name;
 
-      if (!product) {
-        detail.textContent = "Sorry, this product could not be found.";
-        return;
-      }
+      let color = p.colors.length ? p.colors[0] : "";
+      let qty = 1;
 
-      const cat = catInfo(product.category);
+      const image = h("div", { class: "detail-image", style: "--c:" + cat.color }, productImage(p, true));
+      const info = h("div", { class: "detail-info" },
+        h("p", { class: "eyebrow", style: "color:" + cat.dark, text: p.category }),
+        h("h1", { text: p.name }),
+        h("div", { class: "price" }, priceNode(p)),
+        h("p", { class: "description", text: p.description })
+      );
 
-      $("#crumbName").textContent = product.name;
-      document.title = product.name + " | " + SITE.name;
-
-      const image = document.createElement("div");
-      image.className = "detail-image";
-      image.style.setProperty("--c", cat.color);
-
-      if (product.images[0]) {
-        const img = document.createElement("img");
-        img.src = product.images[0];
-        img.alt = product.name;
-        image.appendChild(img);
-      } else {
-        image.appendChild(placeholderTile(product, true));
-      }
-
-      const info = document.createElement("div");
-      info.className = "detail-info";
-
-      const eyebrow = document.createElement("p");
-      eyebrow.className = "eyebrow";
-      eyebrow.style.color = cat.dark;
-      eyebrow.textContent = product.category;
-
-      const heading = document.createElement("h1");
-      heading.textContent = product.name;
-
-      const price = document.createElement("div");
-      price.className = "price" + (product.price === null ? " ask" : "");
-      price.textContent = money(product.price);
-
-      const description = document.createElement("p");
-      description.className = "description";
-      description.textContent = product.description;
-
-      info.append(eyebrow, heading, price, description);
-
-      let selectedColor = product.colors.length ? product.colors[0] : "";
-      let quantity = 1;
-
-      if (product.colors.length) {
-        const label = document.createElement("span");
-        label.className = "detail-label";
-        label.textContent = "Choose a colour";
-        info.appendChild(label);
-
-        const swatches = document.createElement("div");
-        swatches.className = "swatches";
-
-        product.colors.forEach((color, index) => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "swatch";
-          btn.textContent = color;
-          btn.setAttribute("aria-pressed", String(index === 0));
-
-          btn.addEventListener("click", () => {
-            selectedColor = color;
-            swatches.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
-            updateOrderLinks();
-          });
-
-          swatches.appendChild(btn);
+      const qtyCount = h("span", { text: "1", "aria-live": "polite" });
+      if (p.colors.length) {
+        const sw = h("div", { class: "swatches", role: "group", "aria-label": "Colour" });
+        p.colors.forEach((c, i) => {
+          const b = h("button", { type: "button", class: "swatch", "aria-pressed": String(i === 0) }, c);
+          b.addEventListener("click", () => { color = c; sw.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); refresh(); });
+          sw.append(b);
         });
-
-        info.appendChild(swatches);
+        info.append(h("span", { class: "detail-label", text: "Choose a colour" }), sw);
       }
 
-      const qtyLabel = document.createElement("span");
-      qtyLabel.className = "detail-label";
-      qtyLabel.textContent = "Quantity";
-      info.appendChild(qtyLabel);
+      const minus = h("button", { type: "button", "aria-label": "Decrease quantity", onclick: () => { qty = Math.max(1, qty - 1); refresh(); } }, "−");
+      const plus = h("button", { type: "button", "aria-label": "Increase quantity", onclick: () => { qty = Math.min(Math.max(1, maxQty(p)), qty + 1); refresh(); } }, "+");
+      info.append(h("span", { class: "detail-label", text: "Quantity" }), h("div", { class: "quantity" }, minus, qtyCount, plus));
 
-      const qty = document.createElement("div");
-      qty.className = "quantity";
-
-      const minus = document.createElement("button");
-      minus.type = "button";
-      minus.textContent = "−";
-      minus.setAttribute("aria-label", "Decrease quantity");
-
-      const count = document.createElement("span");
-      count.textContent = "1";
-
-      const plus = document.createElement("button");
-      plus.type = "button";
-      plus.textContent = "+";
-      plus.setAttribute("aria-label", "Increase quantity");
-
-      minus.addEventListener("click", () => {
-        quantity = Math.max(1, quantity - 1);
-        count.textContent = quantity;
-        updateOrderLinks();
-      });
-
-      plus.addEventListener("click", () => {
-        quantity = Math.min(20, quantity + 1);
-        count.textContent = quantity;
-        updateOrderLinks();
-      });
-
-      qty.append(minus, count, plus);
-      info.appendChild(qty);
-
-      const actions = document.createElement("div");
-      actions.className = "detail-actions";
-
-      const wa = document.createElement("a");
-      wa.className = "btn whatsapp";
-      wa.textContent = "Order on WhatsApp";
-      wa.target = "_blank";
-      wa.rel = "noopener";
-
-      const ig = document.createElement("a");
-      ig.className = "btn instagram";
-      ig.textContent = "Order on Instagram";
-      ig.target = "_blank";
-      ig.rel = "noopener";
-
-      const note = document.createElement("p");
-      note.className = "detail-note";
-      note.textContent = "Instagram does not support pre-filled DMs. Your order summary will be copied so you can paste it into the chat.";
-
-      function message() {
-        return "Hi " + SITE.name + "! I would like to order:\n" +
-          product.name + "\n" +
-          (product.price === null ? "" : "Price: " + money(product.price) + "\n") +
-          (selectedColor ? "Colour: " + selectedColor + "\n" : "") +
-          "Quantity: " + quantity + "\n" +
-          (product.price === null ? "Please share the price and colour options.\n" : "Subtotal: " + money(product.price * quantity) + "\n") +
-          "Please confirm availability and delivery charges.";
+      if (canBuy(p)) {
+        info.append(h("div", { class: "detail-buy" },
+          h("button", { type: "button", class: "btn", onclick: () => addToCart(p.id, color, qty) }, "Add to cart"),
+          h("button", { type: "button", class: "btn dark", onclick: () => { if (addToCart(p.id, color, qty)) location.hash = "#checkout"; } }, "Buy now")
+        ));
+        if (p.stock != null && p.stock <= 5) info.append(h("p", { class: "detail-note", text: "Only " + p.stock + " left." }));
+      } else {
+        info.append(h("p", { class: "soldout", text: p.stock === 0 ? "Sold out for now. Message us to ask about the next batch." : "Currently unavailable." }));
       }
 
-      function updateOrderLinks() {
+      // Chat ordering (kept for customers who prefer it)
+      const wa = h("a", { class: "btn whatsapp", target: "_blank", rel: "noopener" }, "Order on WhatsApp");
+      const ig = h("a", { class: "btn instagram", target: "_blank", rel: "noopener noreferrer" }, "Order on Instagram");
+      const note = h("p", { class: "detail-note", text: "Instagram does not support pre-filled DMs. Your order summary will be copied so you can paste it into the chat." });
+      const message = () =>
+        "Hi " + SITE.name + "! I would like to order:\n" + p.name + "\n" + "Price: " + money(unit(p)) + "\n" +
+        (color ? "Colour: " + color + "\n" : "") + "Quantity: " + qty + "\n" + "Subtotal: " + money(unit(p) * qty) + "\n" +
+        "Please confirm availability and delivery charges.";
+      ig.addEventListener("click", () => {
+        const text = message();
+        const show = (copied) => {
+          note.textContent = (copied ? "Order summary copied. Paste it into the Instagram chat and send." : "Could not copy automatically. In the Instagram chat, type: " + p.name + ", quantity " + qty + ".") +
+            " If the chat does not open, use our Instagram profile: " + instagramProfileUrl();
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => show(true), () => show(false)); else show(false);
+      });
+      info.append(h("div", { class: "detail-chat" }, h("p", { text: "Prefer to order by chat?" }), h("div", { class: "detail-actions" }, wa, ig), note));
+
+      if (p.details && p.details.length) {
+        info.append(h("span", { class: "detail-label", text: "Product details" }), h("ul", { class: "detail-list" }, p.details.map((t) => h("li", { text: t }))));
+      }
+      info.append(h("a", { class: "back-link", href: "#shop" }, "← Back to the collection"));
+
+      function refresh() {
+        qtyCount.textContent = qty;
         wa.href = waUrl(message());
         ig.href = instagramDmUrl();
       }
-
-      ig.rel = "noopener noreferrer";
-
-      ig.addEventListener("click", () => {
-        // Copy first (inside the click, so browsers allow it); the link then opens Instagram.
-        const text = message();
-        const showFallback = copied => {
-          note.textContent = (copied
-            ? "Order summary copied. Paste it into the Instagram chat and send."
-            : "Could not copy automatically. In the Instagram chat, type: " + product.name + ", quantity " + quantity + ".") +
-            " If the chat does not open, use our Instagram profile: " + instagramProfileUrl();
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => showFallback(true), () => showFallback(false));
-        } else {
-          showFallback(false);
-        }
-      });
-
-      updateOrderLinks();
-      actions.append(wa, ig);
-      info.append(actions, note);
-
-      if (product.details && product.details.length) {
-        const label = document.createElement("span");
-        label.className = "detail-label";
-        label.textContent = "Product details";
-        info.appendChild(label);
-
-        const list = document.createElement("ul");
-        list.className = "detail-list";
-
-        product.details.forEach(text => {
-          const li = document.createElement("li");
-          li.textContent = text;
-          list.appendChild(li);
-        });
-
-        info.appendChild(list);
-      }
-
-      const back = document.createElement("a");
-      back.className = "back-link";
-      back.href = "#shop";
-      back.textContent = "← Back to the collection";
-      info.appendChild(back);
-
+      refresh();
       detail.append(image, info);
     }
 
-    function route() {
-      const match = location.hash.match(/^#p=(.+)$/);
-      const home = $("#homeView");
-      const productView = $("#productView");
+    // ---------------- cart page ----------------
+    const lineKey = (i) => i.slug + "|" + i.variant;
 
-      if (match) {
-        home.classList.add("hidden");
-        productView.classList.remove("hidden");
-        renderProduct(decodeURIComponent(match[1]));
-        window.scrollTo(0, 0);
-      } else {
-        productView.classList.add("hidden");
-        home.classList.remove("hidden");
-        document.title = SITE.name + " | Handcrafted, Home Décor & Hair Accessories";
+    function renderCart() {
+      const v = $("#cartView");
+      v.textContent = "";
+      v.append(h("h1", { class: "page-title", id: "cartTitle", tabindex: "-1", text: "Your cart" }));
 
-        const hash = location.hash;
+      if (!cart.length) {
+        v.append(h("div", { class: "panel empty-cart" },
+          h("h2", { text: "Your cart is empty" }),
+          h("p", { text: "Pick something lovely from the collection and it will wait for you here." }),
+          h("a", { class: "btn", href: "#shop" }, "Continue shopping")));
+        return;
+      }
 
-        if (hash && hash !== "#home") {
-          const target = document.querySelector(hash);
-          if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else if (hash === "#home") {
-          window.scrollTo({ top: 0, behavior: "smooth" });
+      const list = h("div", { class: "panel" });
+      cart.forEach((i) => {
+        const p = findProduct(i.slug);
+        const cat = p ? catInfo(p.category) : PALETTE[0];
+        const bad = !p || !canBuy(p) || (p.colors.length && p.colors.indexOf(i.variant) < 0);
+        const name = p ? p.name : "This item";
+        list.append(h("div", { class: "cart-line" },
+          h("div", { class: "cart-thumb", style: "--c:" + cat.color }, p ? productImage(p, false) : null),
+          h("div", null,
+            p ? h("a", { class: "cart-name", href: "#p=" + enc(p.id), text: name }) : h("span", { class: "cart-name", text: name }),
+            i.variant ? h("div", { class: "cart-meta", text: "Colour: " + i.variant }) : null,
+            p ? h("div", { class: "cart-meta" }, money(unit(p)) + " each") : null,
+            bad ? h("div", { class: "cart-warn", role: "alert", text: "No longer available. Please remove it to continue." }) : null,
+            h("div", { class: "cart-controls" },
+              bad ? null : h("div", { class: "quantity" },
+                h("button", { type: "button", "aria-label": "Decrease quantity of " + name, onclick: () => setLineQty(i.slug, i.variant, i.qty - 1) }, "−"),
+                h("span", { text: i.qty }),
+                h("button", { type: "button", "aria-label": "Increase quantity of " + name, onclick: () => setLineQty(i.slug, i.variant, i.qty + 1) }, "+")),
+              h("button", { type: "button", class: "link-btn", onclick: () => removeLine(i.slug, i.variant) }, "Remove"))
+          ),
+          h("div", { class: "cart-line-total", text: p && !bad ? money(unit(p) * i.qty) : "" })
+        ));
+      });
+
+      const t = estimate("", 0);
+      const hasStateFees = SHIPPING.state_fees && Object.keys(SHIPPING.state_fees).length > 0;
+      const free = SHIPPING.free_threshold_paise;
+      const side = h("div", { class: "panel sticky-panel" },
+        h("h2", { text: "Order summary" }),
+        h("div", { class: "sum-row" }, h("span", { text: "Subtotal" }), h("span", { text: money(t.subtotal) })),
+        h("div", { class: "sum-row" }, h("span", { text: "Shipping" }),
+          h("span", { class: LIVE && SHIPPING.configured && !hasStateFees ? "" : "muted", text: LIVE && SHIPPING.configured && !hasStateFees ? (t.shipping === 0 ? "Free" : money(t.shipping)) : "Calculated at checkout" })),
+        h("div", { class: "sum-row total" }, h("span", { text: "Total" }), h("span", { text: money(t.subtotal) + (LIVE && SHIPPING.configured && !hasStateFees ? "" : "+") })),
+        LIVE && SHIPPING.configured && free != null ? h("p", { class: "sum-note", text: t.subtotal >= free ? "You have free shipping." : "Add " + money(free - t.subtotal) + " more for free shipping." }) : null,
+        h("div", { class: "stack" },
+          h("a", { class: "btn lg dark", href: "#checkout", "aria-disabled": String(cartHasProblem()), onclick: (e) => { if (cartHasProblem()) { e.preventDefault(); toast("Please remove unavailable items first."); } } }, "Checkout"),
+          h("a", { class: "btn ghost lg", href: "#shop" }, "Continue shopping"))
+      );
+      v.append(h("div", { class: "flow-grid" }, list, side));
+    }
+
+    // ---------------- checkout page ----------------
+    let coupon = null;            // { code, discount }
+    let attempt = null;           // { fp, key, data }  (one payment attempt for one exact cart + form)
+    let paying = false;
+
+    function field(id, label, o) {
+      o = o || {};
+      const common = { id, name: id, autocomplete: o.autocomplete, "aria-required": o.required ? "true" : null, "aria-describedby": "err-" + id, maxlength: o.maxlength, inputmode: o.inputmode };
+      let input;
+      if (o.select) { input = h("select", common, h("option", { value: "", text: "Choose your state" }), STATES.map((s) => h("option", { value: s, text: s }))); }
+      else if (o.rows) { input = h("textarea", Object.assign({ rows: o.rows }, common)); }
+      else { input = h("input", Object.assign({ type: o.type || "text" }, common)); }
+      return h("div", { class: "field" + (o.wide ? " wide" : "") },
+        h("label", { for: id }, label, o.required ? h("span", { class: "req", "aria-hidden": "true", text: " *" }) : null),
+        input, o.hint ? h("small", { class: "hint", text: o.hint }) : null,
+        h("p", { class: "err", id: "err-" + id, role: "alert" }));
+    }
+
+    const FIELD_IDS = ["name", "mobile", "email", "address", "landmark", "city", "state", "pincode", "instructions"];
+    const formVal = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
+    function collectForm() { const c = {}; FIELD_IDS.forEach((id) => { c[id] = formVal(id); }); return c; }
+
+    function normMobile(v) {
+      let d = String(v || "").replace(/[\s\-()]/g, "");
+      if (!/^\+?\d+$/.test(d)) return null;
+      d = d.replace(/^\+/, "");
+      if (d.length === 12 && d.indexOf("91") === 0) d = d.slice(2); else if (d.length === 11 && d.charAt(0) === "0") d = d.slice(1);
+      return /^[6-9]\d{9}$/.test(d) ? d : null;
+    }
+    function validateForm(c) {
+      const e = {};
+      if (c.name.length < 2) e.name = "Enter your full name";
+      if (!normMobile(c.mobile)) e.mobile = "Enter a valid 10-digit Indian mobile number";
+      if (c.address.length < 10) e.address = "Enter your full delivery address (house, street, area)";
+      if (c.city.length < 2) e.city = "Enter your city";
+      if (!c.state) e.state = "Choose your state";
+      if (!/^[1-9]\d{5}$/.test(c.pincode)) e.pincode = "Enter a valid 6-digit PIN code";
+      if (c.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email)) e.email = "Enter a valid email address or leave it blank";
+      return e;
+    }
+    function showErrors(errors) {
+      FIELD_IDS.forEach((id) => {
+        const el = $("#" + id), msg = $("#err-" + id);
+        if (!el || !msg) return;
+        msg.textContent = errors[id] || "";
+        if (errors[id]) el.setAttribute("aria-invalid", "true"); else el.removeAttribute("aria-invalid");
+      });
+      const firstBad = FIELD_IDS.find((id) => errors[id]);
+      if (firstBad) $("#" + firstBad).focus();
+    }
+
+    function setMsg(text, kind) {
+      const m = $("#payMsg");
+      if (!m) return;
+      m.className = "msg" + (text ? " show " + (kind || "info") : "");
+      m.textContent = "";
+      if (text) { if (kind === "info" && /…$/.test(text)) m.append(h("span", { class: "spinner" })); m.append(text); }
+    }
+    function setBusy(on, label) {
+      paying = on;
+      const b = $("#payBtn");
+      if (!b) return;
+      b.disabled = on;
+      b.textContent = on ? (label || "Please wait…") : payLabel();
+    }
+    const payLabel = () => "Pay " + money(currentTotals().total) + " securely";
+    const currentTotals = () => estimate(formVal("state"), coupon ? coupon.discount : 0);
+
+    function renderSummary(override) {
+      const box = $("#summaryBox");
+      if (!box) return;
+      const t = override || currentTotals();
+      box.textContent = "";
+      cart.forEach((i) => {
+        const p = findProduct(i.slug);
+        if (p) box.append(h("div", { class: "summary-item" }, h("span", { text: i.qty + " × " + p.name + (i.variant ? " (" + i.variant + ")" : "") }), h("span", { text: money(unit(p) * i.qty) })));
+      });
+      box.append(
+        h("div", { class: "sum-row", style: "margin-top:8px" }, h("span", { text: "Subtotal" }), h("span", { text: money(t.subtotal) })),
+        t.discount ? h("div", { class: "sum-row" }, h("span", { text: "Discount" + (coupon ? " (" + coupon.code + ")" : "") }), h("span", { text: "−" + money(t.discount) })) : null,
+        h("div", { class: "sum-row" }, h("span", { text: "Shipping" }), h("span", { text: t.shipping === 0 ? "Free" : money(t.shipping) })),
+        h("div", { class: "sum-row total" }, h("span", { text: "Total payable" }), h("span", { text: money(t.total) })));
+      if (!paying) { const b = $("#payBtn"); if (b) b.textContent = "Pay " + money(t.total) + " securely"; }
+    }
+
+    function chatFallbackUrl() {
+      const lines = cart.map((i) => { const p = findProduct(i.slug); return "- " + i.qty + " x " + (p ? p.name : i.slug) + (i.variant ? " (" + i.variant + ")" : "") + (p ? " @ " + money(unit(p)) : ""); });
+      return waUrl("Hi " + SITE.name + "! I would like to order:\n" + lines.join("\n") + "\nSubtotal: " + money(estimate("", 0).subtotal) + "\nPlease confirm delivery charges and payment details.");
+    }
+
+    function renderCheckout() {
+      const v = $("#checkoutView");
+      v.textContent = "";
+      v.append(h("h1", { class: "page-title", id: "checkoutTitle", tabindex: "-1", text: "Checkout" }));
+
+      if (!cart.length) {
+        v.append(h("div", { class: "panel empty-cart" }, h("h2", { text: "Your cart is empty" }), h("p", { text: "Add something to your cart before checking out." }), h("a", { class: "btn", href: "#shop" }, "Continue shopping")));
+        return;
+      }
+      if (cartHasProblem()) {
+        v.append(h("div", { class: "banner bad", role: "alert" }, h("b", { text: "Some items are no longer available" }), "Please remove them from your cart to continue."),
+          h("a", { class: "btn", href: "#cart" }, "Back to cart"));
+        return;
+      }
+      if (!LIVE || !SHIPPING.configured) {
+        v.append(h("div", { class: "banner info" }, h("b", { text: "Online checkout is opening soon" }), "For now, please send your order on WhatsApp or Instagram and we will confirm delivery and payment with you."),
+          h("div", { class: "hero-actions", style: "margin-top:0" },
+            h("a", { class: "btn whatsapp", href: chatFallbackUrl(), target: "_blank", rel: "noopener" }, "Send my cart on WhatsApp"),
+            h("a", { class: "btn instagram", href: instagramDmUrl(), target: "_blank", rel: "noopener noreferrer" }, "Instagram DM"),
+            h("a", { class: "btn ghost", href: "#cart" }, "Back to cart")));
+        return;
+      }
+
+      loadRazorpay().catch(() => { /* retried when the customer presses Pay */ });
+
+      const form = h("form", { id: "checkoutForm", novalidate: true, autocomplete: "on" },
+        h("div", { class: "panel" },
+          h("h2", { text: "Delivery details" }),
+          h("div", { class: "form-grid" },
+            field("name", "Full name", { required: true, autocomplete: "name", maxlength: 80 }),
+            field("mobile", "Mobile number", { required: true, autocomplete: "tel", inputmode: "tel", type: "tel", maxlength: 16, hint: "10-digit Indian mobile number. We use it for order updates." }),
+            field("email", "Email (optional)", { autocomplete: "email", type: "email", maxlength: 120 }),
+            field("pincode", "PIN code", { required: true, autocomplete: "postal-code", inputmode: "numeric", maxlength: 6 }),
+            field("address", "Delivery address", { required: true, autocomplete: "street-address", rows: 3, wide: true, maxlength: 300, hint: "House / flat, street, area" }),
+            field("landmark", "Landmark (optional)", { maxlength: 100 }),
+            field("city", "City", { required: true, autocomplete: "address-level2", maxlength: 60 }),
+            field("state", "State", { required: true, autocomplete: "address-level1", select: true }),
+            field("instructions", "Delivery instructions (optional)", { rows: 2, wide: true, maxlength: 300 })
+          )),
+        h("div", { class: "panel" },
+          h("h2", { text: "Coupon code" }),
+          h("div", { class: "coupon-row" },
+            h("input", { id: "coupon", type: "text", "aria-label": "Coupon code", autocomplete: "off", maxlength: "30", placeholder: "Have a coupon?" }),
+            h("button", { type: "button", class: "btn ghost small", id: "couponBtn", onclick: applyCoupon }, "Apply")),
+          h("p", { class: "sum-note", id: "couponMsg", role: "status" }))
+      );
+
+      const side = h("div", { class: "panel sticky-panel" },
+        h("h2", { text: "Order summary" }),
+        h("div", { id: "summaryBox" }),
+        h("div", { class: "stack" },
+          h("button", { type: "submit", class: "btn lg dark", id: "payBtn", form: "checkoutForm" }, "Pay securely"),
+          h("a", { class: "btn ghost lg", href: "#cart" }, "Back to cart")),
+        h("p", { class: "msg", id: "payMsg", role: "status", "aria-live": "polite" }),
+        h("p", { class: "secure-note", text: "Pay with Google Pay, PhonePe, BHIM or any UPI app, or with cards and net banking. Payments are handled securely by Razorpay. We never see your card details or UPI PIN." }));
+
+      v.append(h("div", { class: "flow-grid" }, form, side));
+
+      // restore what the customer typed earlier in this tab
+      const saved = sess.get("tla_form", {});
+      FIELD_IDS.forEach((id) => { if (saved[id] && $("#" + id)) $("#" + id).value = saved[id]; });
+      if (coupon) { $("#coupon").value = coupon.code; $("#couponMsg").textContent = "Coupon applied: −" + money(coupon.discount); }
+
+      form.addEventListener("input", () => { sess.set("tla_form", collectForm()); });
+      $("#state").addEventListener("change", () => renderSummary());
+      form.addEventListener("submit", (e) => { e.preventDefault(); startPayment(); });
+      renderSummary();
+    }
+
+    async function applyCoupon() {
+      const code = $("#coupon").value.trim().toUpperCase();
+      const msg = $("#couponMsg");
+      if (!code) { coupon = null; msg.textContent = ""; renderSummary(); return; }
+      msg.textContent = "Checking…";
+      try {
+        const r = await api("/api/products?coupon=" + enc(code) + "&subtotal=" + estimate("", 0).subtotal);
+        if (r.valid) { coupon = { code, discount: r.discount_paise }; msg.textContent = "Coupon applied: −" + money(r.discount_paise); }
+        else { coupon = null; msg.textContent = r.message; }
+      } catch (e) { coupon = null; msg.textContent = "Could not check the coupon right now."; }
+      renderSummary();
+    }
+
+    let rzpPromise = null;
+    function loadRazorpay() {
+      if (window.Razorpay) return Promise.resolve();
+      if (!rzpPromise) {
+        rzpPromise = new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = "https://checkout.razorpay.com/v1/checkout.js";
+          s.onload = () => resolve();
+          s.onerror = () => { rzpPromise = null; reject(new Error("load")); };
+          document.head.appendChild(s);
+        });
+      }
+      return rzpPromise;
+    }
+
+    const newKey = () => ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)).replace(/[^A-Za-z0-9-]/g, "");
+
+    async function startPayment() {
+      if (paying) return;                                   // blocks double clicks
+      setMsg("");
+      const c = collectForm();
+      const errors = validateForm(c);
+      showErrors(errors);
+      if (Object.keys(errors).length) { setMsg("Please fix the highlighted fields.", "error"); return; }
+
+      const body = { items: cart.map((i) => ({ slug: i.slug, variant: i.variant, qty: i.qty })), customer: c, coupon: coupon ? coupon.code : "" };
+      const fp = JSON.stringify(body);
+      if (attempt && attempt.fp === fp && attempt.data) { openRazorpay(attempt.data, c); return; }   // same cart + details: retry the same order
+      if (!attempt || attempt.fp !== fp) attempt = { fp, key: newKey(), data: null };
+
+      setBusy(true, "Preparing your order…");
+      let data;
+      try {
+        data = await api("/api/create-order", { method: "POST", body: Object.assign({ idempotencyKey: attempt.key }, body) });
+      } catch (e) {
+        setBusy(false);
+        if (e.data && e.data.fields) { showErrors(e.data.fields); }
+        if (e.data && e.data.retry) attempt = null;
+        setMsg(e.status === 503 ? "Online checkout is not available right now. Please order on WhatsApp or Instagram." : e.message, "error");
+        if (e.status === 409) renderCartSoon();
+        return;
+      }
+      if (data.alreadyPaid) { setBusy(false); location.hash = "#order=" + enc(data.orderNo) + "&t=" + enc(data.token); return; }
+      attempt.data = data;
+
+      // Show the server's final numbers. If they differ from what was on screen, ask the customer to confirm.
+      const shown = currentTotals();
+      renderSummary(data.totals);
+      if (data.totals.total !== shown.total) {
+        setBusy(false);
+        $("#payBtn").textContent = "Confirm and pay " + money(data.totals.total);
+        setMsg("Your total is now " + money(data.totals.total) + " (updated shipping or discount). Please check the summary and press the button to pay.", "info");
+        return;
+      }
+      openRazorpay(data, c);
+    }
+    function renderCartSoon() { setTimeout(() => { fetchLive().then(() => { if (location.hash === "#checkout") route({ noScroll: true }); }); }, 50); }
+
+    async function openRazorpay(data, c) {
+      setBusy(true, "Opening payment…");
+      try { await loadRazorpay(); } catch (e) { setBusy(false); setMsg("Could not load the payment window. Please check your internet connection and try again.", "error"); return; }
+      let finished = false;
+      const rzp = new window.Razorpay({
+        key: data.keyId, amount: data.amount, currency: data.currency, order_id: data.razorpayOrderId,
+        name: SITE.name, description: "Order " + data.orderNo,
+        prefill: { name: data.prefill.name, contact: data.prefill.contact, email: data.prefill.email },
+        notes: { order_no: data.orderNo },
+        theme: { color: "#E8695B" },
+        config: { display: { blocks: { upi: { name: "Pay using UPI", instruments: [{ method: "upi" }] } }, sequence: ["block.upi"], preferences: { show_default_blocks: true } } },
+        modal: {
+          confirm_close: true,
+          ondismiss: () => {
+            if (finished) return;
+            api("/api/cancel-payment", { method: "POST", body: { orderNo: data.orderNo, token: data.token } }).catch(() => {});
+            setBusy(false);
+            setMsg("Payment was not completed. Your order is saved. Press the button to try again.", "info");
+          }
+        },
+        handler: async (resp) => {
+          finished = true;
+          setBusy(true, "Confirming payment…");
+          setMsg("Confirming your payment… please do not close this page.", "info");
+          let outcome = "wait";
+          try {
+            const r = await api("/api/verify-payment", { method: "POST", body: { razorpay_order_id: resp.razorpay_order_id, razorpay_payment_id: resp.razorpay_payment_id, razorpay_signature: resp.razorpay_signature } });
+            if (r.status === "paid") outcome = "paid";
+          } catch (e) { /* the order page keeps checking, so a slow network never loses an order */ }
+          rememberOrder(data.orderNo, data.token);
+          sess.set("tla_wait", data.orderNo);
+          store.set("tla_clear_on_paid", data.orderNo);
+          attempt = null;
+          location.hash = "#order=" + enc(data.orderNo) + "&t=" + enc(data.token);
         }
+      });
+      rzp.on("payment.failed", (r) => {
+        setBusy(false);
+        setMsg("Payment failed" + (r && r.error && r.error.description ? ": " + r.error.description : "") + ". You can try again.", "error");
+      });
+      setBusy(false);
+      rzp.open();
+    }
+
+    function rememberOrder(no, token) {
+      const list = store.get("tla_orders", []).filter((o) => o.no !== no);
+      list.unshift({ no, token, at: Date.now() });
+      store.set("tla_orders", list.slice(0, 5));
+    }
+
+    // ---------------- order confirmation / details / tracking ----------------
+    let routeId = 0;
+    const METHOD = { upi: "UPI", card: "Card", netbanking: "Net banking", wallet: "Wallet", emi: "EMI", paylater: "Pay later" };
+    const STEPS = ["Order placed", "Payment confirmed", "Order processing", "Order shipped", "Out for delivery", "Delivered"];
+    function stepIndex(o) {
+      if (o.paymentStatus !== "Successful" && o.paymentStatus !== "Refunded") return 0;
+      return { Paid: 1, Processing: 2, Shipped: 3, "Out for Delivery": 4, Delivered: 5 }[o.orderStatus] || 1;
+    }
+    const fmtDate = (iso) => new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" });
+
+    function orderBanner(o, mode, waiting) {
+      const first = (o.customerName || "").split(" ")[0];
+      if (o.orderStatus === "Cancelled") return h("div", { class: "banner bad" }, h("b", { text: "This order was cancelled" }), "If you paid, your refund will be handled by us. Message us on WhatsApp if you have questions.");
+      if (o.orderStatus === "Refund Initiated") return h("div", { class: "banner info" }, h("b", { text: "Refund started" }), "Your refund has been started. It usually reaches your account in a few working days.");
+      if (o.orderStatus === "Refunded") return h("div", { class: "banner info" }, h("b", { text: "Refunded" }), "This order has been refunded.");
+      if (o.paymentStatus === "Successful") {
+        return mode === "confirm"
+          ? h("div", { class: "banner ok", role: "status" }, h("b", { text: "Thank you, " + first + "! Your payment is confirmed." }), "Your order is placed. We will start making it soon and keep you updated on WhatsApp.")
+          : h("div", { class: "banner ok" }, h("b", { text: "Payment confirmed" }), "Current status: " + o.orderStatus + ".");
+      }
+      if (waiting) return h("div", { class: "banner info", role: "status" }, h("b", null, h("span", { class: "spinner" }), "Confirming your payment…"), "This usually takes a few seconds. Please keep this page open.");
+      return h("div", { class: "banner warn" }, h("b", { text: "Payment not confirmed" }),
+        "We have not received a confirmed payment for this order. If money was deducted from your account, it will be confirmed automatically or refunded by your bank. You can also message us on WhatsApp with your order ID. Otherwise, you can place the order again from your cart.");
+    }
+
+    function renderOrderInto(box, o, mode, waiting) {
+      box.textContent = "";
+      const idx = stepIndex(o);
+      const inactive = ["Cancelled", "Refund Initiated", "Refunded"].indexOf(o.orderStatus) >= 0;
+      const good = o.paymentStatus === "Successful";
+
+      box.append(orderBanner(o, mode, waiting));
+      box.append(h("div", { class: "flow-grid" },
+        h("div", null,
+          h("div", { class: "panel" },
+            h("div", { class: "order-head" },
+              h("div", { class: "kv" }, h("b", { text: "Order ID" }), h("span", { text: o.orderNo })),
+              h("div", { class: "kv" }, h("b", { text: "Placed on" }), h("span", { text: fmtDate(o.createdAt) })),
+              h("div", { class: "kv" }, h("b", { text: "Status" }), h("span", { class: "chip-status " + (inactive ? "bad" : good ? "good" : ""), text: o.paymentStatus === "Successful" || inactive ? o.orderStatus : "Awaiting payment" })),
+              good ? h("div", { class: "kv" }, h("b", { text: "Payment" }), h("span", { text: (METHOD[o.paymentMethod] || o.paymentMethod || "Online") + (o.paymentRef ? " · " + o.paymentRef : "") })) : null)),
+          h("div", { class: "panel" }, h("h2", { text: "Items" }),
+            h("table", { class: "items-table" }, h("tbody", null, o.items.map((i) =>
+              h("tr", null, h("td", null, i.qty + " × " + i.name, i.variant ? h("small", { text: "Colour: " + i.variant }) : null), h("td", { text: money(i.total) }))))),
+            h("div", { style: "margin-top:10px" },
+              h("div", { class: "sum-row" }, h("span", { text: "Subtotal" }), h("span", { text: money(o.totals.subtotal) })),
+              o.totals.discount ? h("div", { class: "sum-row" }, h("span", { text: "Discount" }), h("span", { text: "−" + money(o.totals.discount) })) : null,
+              h("div", { class: "sum-row" }, h("span", { text: "Shipping" }), h("span", { text: o.totals.shipping === 0 ? "Free" : money(o.totals.shipping) })),
+              h("div", { class: "sum-row total" }, h("span", { text: good ? "Total paid" : "Total" }), h("span", { text: money(o.totals.total) })))),
+          h("div", { class: "panel" }, h("h2", { text: "Delivering to" }),
+            h("p", { style: "margin:0" }, o.customerName, h("br"), o.address.line, h("br"), o.address.landmark ? [o.address.landmark, h("br")] : null, o.address.city + ", " + o.address.state + " " + o.address.pincode))),
+        h("div", null,
+          h("div", { class: "panel" }, h("h2", { text: "Order progress" }),
+            h("ol", { class: "timeline" }, STEPS.map((s, n) => h("li", { class: "tl-step" + (!inactive && n <= idx ? " done" : "") + (!inactive && n === idx ? " now" : "") },
+              s, n === 1 && good && o.paidAt ? h("small", { text: fmtDate(o.paidAt) }) : null))),
+            o.tracking ? h("p", { class: "sum-note" }, "Tracking: ", [o.tracking.carrier, o.tracking.number].filter(Boolean).join(" "), " ",
+              o.tracking.url ? h("a", { href: o.tracking.url, target: "_blank", rel: "noopener noreferrer", style: "text-decoration:underline" }, "Track parcel ↗") : null) : null,
+            good ? h("p", { class: "sum-note", text: "We will confirm your delivery timing on WhatsApp." }) : null),
+          h("div", { class: "panel" },
+            h("div", { class: "stack", style: "margin-top:0" },
+              mode === "confirm" ? h("a", { class: "btn dark lg", href: "#order=" + enc(o.orderNo) + "&t=" + enc(sess.get("tla_tok", "")) + "&view=details" }, "View order details") : null,
+              h("a", { class: "btn lg", href: "#shop" }, "Continue shopping"),
+              h("button", { type: "button", class: "btn ghost lg", onclick: (e) => { const done = () => { e.target.textContent = "Link copied"; }; if (navigator.clipboard && navigator.clipboard.writeText && location.hash.indexOf("&t=") > 0) navigator.clipboard.writeText(location.href).then(done, () => {}); else window.print(); } }, location.hash.indexOf("&t=") > 0 ? "Copy private order link" : "Print this page"),
+              h("a", { class: "btn whatsapp lg", href: waUrl("Hi " + SITE.name + "! I have a question about my order " + o.orderNo + "."), target: "_blank", rel: "noopener" }, "Ask about this order"))))
+      ));
+    }
+
+    async function renderOrderPage(orderNo, token, view) {
+      const my = routeId;
+      const v = $("#orderView");
+      v.textContent = "";
+      v.append(h("h1", { class: "page-title", id: "orderTitle", tabindex: "-1", text: "Your order" }));
+      const box = h("div", null, h("p", { class: "loading" }, h("span", { class: "spinner" }), "Loading your order…"));
+      v.append(box);
+      sess.set("tla_tok", token);
+
+      const waiting = sess.get("tla_wait", "") === orderNo;
+      let polls = 0;
+      const mode = view === "details" ? "details" : "confirm";
+
+      async function load() {
+        if (my !== routeId) return;                      // the customer navigated away
+        let o;
+        try { o = await api("/api/order-details?order=" + enc(orderNo) + "&token=" + enc(token)); }
+        catch (e) {
+          if (my !== routeId) return;
+          box.textContent = "";
+          box.append(h("div", { class: "banner bad", role: "alert" }, h("b", { text: "Order not found" }), e.message), h("a", { class: "btn", href: "#track" }, "Track an order"));
+          return;
+        }
+        if (my !== routeId) return;
+        const unpaid = o.paymentStatus !== "Successful" && o.paymentStatus !== "Refunded" && o.orderStatus !== "Cancelled";
+        const keepWaiting = waiting && unpaid && polls < 20;
+        if (o.paymentStatus === "Successful" && store.get("tla_clear_on_paid", "") === orderNo) { clearCart(); store.del("tla_clear_on_paid"); sess.del("tla_wait"); sess.del("tla_form"); coupon = null; }
+        $("#orderTitle").textContent = mode === "confirm" && o.paymentStatus === "Successful" ? "Order confirmed" : "Order " + o.orderNo;
+        renderOrderInto(box, o, mode, keepWaiting);
+        if (keepWaiting) { polls++; setTimeout(load, 3000); }
+        else if (waiting) sess.del("tla_wait");
+      }
+      load();
+    }
+
+    function renderTrack() {
+      const v = $("#trackView");
+      v.textContent = "";
+      v.append(h("h1", { class: "page-title", id: "trackTitle", tabindex: "-1", text: "Track your order" }));
+      v.append(h("p", { class: "track-note", text: "Enter your order ID and the mobile number you used when ordering. For your privacy, an order ID alone is not enough." }));
+      const result = h("div", { style: "margin-top:24px" });
+      const form = h("form", { class: "panel track-form", novalidate: true },
+        field("t-order", "Order ID", { required: true, maxlength: 20, hint: "Example: TLA-2026-00001" }),
+        field("t-mobile", "Mobile number", { required: true, type: "tel", inputmode: "tel", maxlength: 16 }),
+        h("button", { type: "submit", class: "btn dark lg", id: "trackBtn" }, "Check status"));
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const no = $("#t-order").value.trim().toUpperCase(), mob = normMobile($("#t-mobile").value);
+        $("#err-t-order").textContent = /^TLA-\d{4}-\d{5,}$/.test(no) ? "" : "Enter your order ID, like TLA-2026-00001";
+        $("#err-t-mobile").textContent = mob ? "" : "Enter the 10-digit mobile number used for the order";
+        if (!/^TLA-\d{4}-\d{5,}$/.test(no) || !mob) return;
+        const btn = $("#trackBtn"); btn.disabled = true; btn.textContent = "Checking…";
+        result.textContent = "";
+        try {
+          const o = await api("/api/order-details?order=" + enc(no) + "&mobile=" + enc(mob));
+          const box = h("div"); result.append(box); renderOrderInto(box, o, "track", false);
+        } catch (err) { result.append(h("div", { class: "banner bad", role: "alert" }, h("b", { text: "We could not find that order" }), err.message)); }
+        btn.disabled = false; btn.textContent = "Check status";
+      });
+      v.append(form, result);
+      const recent = store.get("tla_orders", []);
+      if (recent.length) v.append(h("div", { class: "recent-orders" }, "Orders from this device: ", recent.map((r) => h("a", { href: "#order=" + enc(r.no) + "&t=" + enc(r.token) + "&view=details", text: r.no }))));
+    }
+
+    // ---------------- routing ----------------
+    const VIEWS = ["homeView", "productView", "cartView", "checkoutView", "orderView", "trackView"];
+    function showOnly(id) { VIEWS.forEach((x) => $("#" + x).classList.toggle("hidden", x !== id)); document.body.classList.toggle("in-flow", ["cartView", "checkoutView", "orderView", "trackView"].indexOf(id) >= 0); }
+    const TITLE = SITE.name + " | Handcrafted, Home Décor & Hair Accessories";
+
+    function route(opts) {
+      opts = opts || {};
+      routeId++;
+      const hash = location.hash;
+      const params = hash.indexOf("=") > 0 ? new URLSearchParams(hash.slice(1)) : null;
+      const focusTitle = (id) => { if (!opts.noScroll) { window.scrollTo(0, 0); const t = $(id); if (t) t.focus({ preventScroll: true }); } };
+
+      if (params && params.get("order")) {
+        showOnly("orderView"); document.title = "Your order | " + SITE.name;
+        renderOrderPage(params.get("order"), params.get("t") || "", params.get("view") || "");
+        if (!opts.noScroll) window.scrollTo(0, 0);
+      } else if (params && params.get("p")) {
+        showOnly("productView"); renderProduct(params.get("p")); if (!opts.noScroll) window.scrollTo(0, 0);
+      } else if (hash === "#cart") {
+        showOnly("cartView"); document.title = "Your cart | " + SITE.name; renderCart(); focusTitle("#cartTitle");
+      } else if (hash === "#checkout") {
+        showOnly("checkoutView"); document.title = "Checkout | " + SITE.name; renderCheckout(); focusTitle("#checkoutTitle");
+      } else if (hash === "#track") {
+        showOnly("trackView"); document.title = "Track your order | " + SITE.name; renderTrack(); focusTitle("#trackTitle");
+      } else {
+        showOnly("homeView"); document.title = TITLE;
+        if (opts.noScroll) return;
+        if (/^#[A-Za-z][\w-]*$/.test(hash) && hash !== "#home") { const t = document.querySelector(hash); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); }
+        else if (hash === "#home") window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
 
+    // ---------------- menu ----------------
     const menuToggle = $("#menuToggle");
-
     menuToggle.addEventListener("click", () => {
-      const nav = $("#mainNav");
-      const open = nav.classList.toggle("open");
+      const open = $("#mainNav").classList.toggle("open");
       menuToggle.setAttribute("aria-expanded", String(open));
       menuToggle.textContent = open ? "×" : "☰";
     });
+    document.querySelectorAll("#mainNav a").forEach((a) => a.addEventListener("click", () => {
+      $("#mainNav").classList.remove("open"); menuToggle.setAttribute("aria-expanded", "false"); menuToggle.textContent = "☰";
+    }));
 
-    document.querySelectorAll("#mainNav a").forEach(link => {
-      link.addEventListener("click", () => {
-        $("#mainNav").classList.remove("open");
-        menuToggle.setAttribute("aria-expanded", "false");
-        menuToggle.textContent = "☰";
-      });
-    });
+    // ---------------- start ----------------
+    async function fetchLive() {
+      try { applyLive(await api("/api/products")); } catch (e) { /* offline or not set up: keep the built-in catalogue */ }
+    }
 
+    loadCart();
+    buildCategories();
     fillBusinessLinks();
     makeCategoryNav();
     createFilters();
     renderProducts();
-
-    window.addEventListener("hashchange", route);
+    updateBadge();
+    window.addEventListener("hashchange", () => route());
+    window.addEventListener("storage", (e) => { if (e.key === "tla_cart_v1") { loadCart(); updateBadge(); } });
     route();
+
+    fetchLive().then(() => {
+      makeCategoryNav(); createFilters(); renderProducts(); updateBadge();
+      const hash = location.hash;
+      // refresh the page the customer is on (no scrolling) now that live prices are known,
+      // but never rebuild the checkout form while they may be typing in it
+      if (hash === "#cart" || hash.indexOf("p=") > 0 || (hash === "#checkout" && !document.querySelector("#checkoutForm"))) route({ noScroll: true });
+    });
   </script>
 </body>
 </html>
